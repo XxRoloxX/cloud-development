@@ -7,11 +7,6 @@ export enum GameStatus {
   FINISHED = 'FINISHED',
 }
 
-// export enum MoveType {
-//   Cross = 'X',
-//   Circle = 'O',
-// }
-
 export enum PlayerTurn {
   Player1 = 'Player1',
   Player2 = 'Player2',

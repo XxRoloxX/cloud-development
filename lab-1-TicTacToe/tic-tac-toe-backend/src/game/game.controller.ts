@@ -2,10 +2,16 @@ import { Controller, Get, Post } from '@nestjs/common';
 import { GameService } from './game.service';
 import { CreateGameDTO } from './dto/createGame.dto';
 import { GameDto } from './dto/game.dto';
+import { Param } from '@nestjs/common';
+import { Patch } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import { MoveDto } from './dto/move.dto';
+import { Body } from '@nestjs/common';
 
 @Controller('game')
 export class GameController {
-  constructor(private readonly gameService: GameService) {}
+  constructor(private readonly gameService: GameService) { }
 
   @Get()
   findAll(): Promise<GameDto[]> {
@@ -17,6 +23,25 @@ export class GameController {
     return this.gameService.createGame();
   }
 
-  // @Patch()
-  // joinGame(): Promise<GameEntity> {}
+  @Get(':id')
+  findOne(@Param() params: any): Promise<GameDto> {
+    return this.gameService.findOne(params.id);
+  }
+
+  @Patch(':id/join')
+  async joinGame(@Param() params: any): Promise<GameDto> {
+    try {
+      return await this.gameService.joinGame(params.id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+    }
+  }
+  @Patch(':id/move')
+  async makeMove(@Param() params: any, @Body() moveDto: MoveDto): Promise<GameDto> {
+    try {
+      return await this.gameService.makeMove(moveDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+    }
+  }
 }

@@ -7,7 +7,11 @@ export class GameEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ default: GameStatus.PENDING })
+  @Column({
+    type: "enum",
+    enum: GameStatus,
+    default: GameStatus.PENDING
+  })
   status: GameStatus;
 
   @Column({ nullable: true, default: null })

@@ -1,11 +1,21 @@
-import { Type } from 'class-transformer';
-import { ValidateNested } from 'class-validator';
-import { Move } from 'src/common/game';
+import { IsInt, ValidateNested } from 'class-validator';
+import { Max, Min } from 'class-validator';
 
 export class MoveDto {
-  gameId: string;
+
+  gameId: number;
   playerId: string;
-  @Type(() => Move)
-  @ValidateNested()
-  move: Move;
+
+  // @IsInt()
+  // @Min(0)
+  // @Max(2)
+  positionX: number;
+
+  // @IsInt()
+  // @Min(0)
+  // @Max(2)
+  positionY: number;
+  // @Type(() => Move)
+  // @ValidateNested()
+  // move: Move;
 }
