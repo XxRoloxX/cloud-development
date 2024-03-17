@@ -25,6 +25,10 @@ export class GameController {
 
   @Get(':id')
   findOne(@Param() params: any): Promise<GameDto> {
+    this.gameService.findOne(params.id).then((game) => {
+      console.log("game: ", game)
+
+    })
     return this.gameService.findOne(params.id);
   }
 

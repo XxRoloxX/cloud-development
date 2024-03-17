@@ -35,5 +35,5 @@ export interface Game {
 
   player2_id: string | null;
 
-  moves: Move[];
+  moves: MoveDto[];
 }

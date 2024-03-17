@@ -16,10 +16,10 @@ export class GameService {
   ) { }
 
   findAll(): Promise<GameEntity[]> {
-    return this.gameRepository.find();
+    return this.gameRepository.find({ where: {}, relations: ["moves"] });
   }
   findOne(id: number): Promise<GameEntity> {
-    return this.gameRepository.findOneBy({ id });
+    return this.gameRepository.findOne({ where: { id }, relations: ["moves"] });
   }
 
   private addPlayerToGame(game: GameEntity, playerTurn: PlayerTurn): GameEntity {
