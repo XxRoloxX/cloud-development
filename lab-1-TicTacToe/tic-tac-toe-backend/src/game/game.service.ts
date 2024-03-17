@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { GameEntity } from 'src/entity/game.entity';
 import { Repository } from 'typeorm';
 import { CreateGameDTO } from './dto/createGame.dto';
-import { GameStatus } from 'src/common/game';
+import { GameStatus, PlayerTurn } from 'src/common/game';
 import { getRandomName } from 'src/common/randomUtils';
 import { MoveDto } from './dto/move.dto';
 import { MoveEntity } from 'src/entity/move.entity';
@@ -22,21 +22,32 @@ export class GameService {
     return this.gameRepository.findOneBy({ id });
   }
 
-  private addPlayerToGame(game: GameEntity): GameEntity {
-    const player = getRandomName();
-    if (!game.player1_id) {
-      game.player1_id = player;
-    } else if (!game.player2_id) {
-      game.player2_id = player;
-    } else {
-      throw new Error(`Game ${game.id} is full`);
+  private addPlayerToGame(game: GameEntity, playerTurn: PlayerTurn): GameEntity {
+    switch (playerTurn) {
+      case PlayerTurn.Player1:
+        if (game.player1_id) {
+          throw new Error(`Game ${game.id} is full`);
+        }
+        game.player1_id = getRandomName();
+        break;
+      case PlayerTurn.Player2:
+        if (game.player2_id) {
+          throw new Error(`Game ${game.id} is full`);
+        }
+        game.player2_id = getRandomName();
+        break;
+      default:
+        throw new Error(`Invalid playerTurn ${playerTurn}`);
     }
+
+
     if (game.player1_id && game.player2_id) {
       game.status = GameStatus.IN_PROGRESS;
     }
+
     return game;
   }
-  async joinGame(id: number): Promise<GameEntity> {
+  async joinGame(id: number, playerTurn: PlayerTurn): Promise<GameEntity> {
     const game = await this.gameRepository.findOneBy({ id });
     if (!game) {
       throw new Error(`Game ${id} not found`);
@@ -44,7 +55,7 @@ export class GameService {
     if (game.status !== GameStatus.PENDING) {
       throw new Error(`Game ${id} is not pending`);
     }
-    return this.gameRepository.save(this.addPlayerToGame(game));
+    return this.gameRepository.save(this.addPlayerToGame(game, playerTurn));
 
   }
   async makeMove(moveDto: MoveDto) {
@@ -55,9 +66,9 @@ export class GameService {
     if (game.status !== GameStatus.IN_PROGRESS) {
       throw new Error(`Game ${moveDto.gameId} is not in progress`);
     }
-    if (game.player1_id !== moveDto.playerId && game.player2_id !== moveDto.playerId) {
-      throw new Error(`Player ${moveDto.playerId} is not in game ${moveDto.gameId}`);
-    }
+    // if (game.player1_id !== moveDto.playerTurn && game.player2_id !== moveDto.playerTurn) {
+    //   throw new Error(`Player ${moveDto.playerTurn} is not in game ${moveDto.gameId}`);
+    // }
     if (game.moves && game.moves.length >= 9) {
       throw new Error(`Game ${moveDto.gameId} is full`);
     }
@@ -67,7 +78,7 @@ export class GameService {
     }
     const moves = game.moves;
     const move = new MoveEntity();
-    move.player_id = moveDto.playerId;
+    move.playerTurn = moveDto.playerTurn;
     move.positionX = moveDto.positionX;
     move.positionY = moveDto.positionY;
     moves.push(move);

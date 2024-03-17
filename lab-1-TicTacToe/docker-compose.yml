@@ -1,29 +1,66 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker compose reference guide at
+# https://docs.docker.com/go/compose-spec-reference/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
 services:
-  # frontend:
-  #   build: ./tic-tac-toe-frontend/
-  #   ports:
-  #     - "3000:3000"
-  # backend:
-  #   build: ./tic-tac-toe-backend/
-  #   ports:
-  #     - "8080:8080"
-  #   networks:
-  #     - backend
+  frontend:
+    image: node:21
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: ${VITE_API_URL}
+    working_dir: /app
+    volumes:
+      - "./tic-tac-toe-frontend:/app"
+    ports:
+      - 127.0.0.1:5173:5173
+    command: "npm run dev -- --host"
+  server:
+    image: node:21
+    environment:
+      - NODE_ENV=development
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+    ports:
+      - 127.0.0.1:8080:8080
+    volumes:
+      - "./tic-tac-toe-backend:/app"
+    working_dir: /app
+    command: "npm run start:dev"
+    networks:
+      - backend
   database:
     image: postgres:latest
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data-dev:/var/lib/postgresql/data
     networks:
       - backend
-
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "127.0.0.1:8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - backend
 networks:
   backend:
     driver: bridge
 volumes:
-  postgres-data:
+  postgres-data-dev:
+  pgadmin-data:

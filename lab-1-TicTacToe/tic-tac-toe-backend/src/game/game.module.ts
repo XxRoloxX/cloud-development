@@ -5,11 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GameEntity } from 'src/entity/game.entity';
 import { GameController } from './game.controller';
 import { MoveEntity } from 'src/entity/move.entity';
+import { EventsGateway } from './game.socket';
 
 @Module({
   controllers: [GameController],
-  providers: [GameService],
+  providers: [GameService, EventsGateway],
   imports: [MovesModule, TypeOrmModule.forFeature([GameEntity, MoveEntity])],
 })
-export class GameModule {
-}
+export class GameModule { }

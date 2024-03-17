@@ -1,0 +1,118 @@
+@import "../../global/animations.scss";
+@import "../../global/variables.scss";
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+
+  &__title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 1s ease;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__description {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  &__components {
+    display: flex;
+    flex-direction: row;
+    height: 50vh;
+    width: 90vw;
+    max-width: 1200px;
+    margin-top: 2rem;
+    padding: 20px;
+    gap: 30px;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      flex-direction: column;
+    }
+  }
+}
+
+.game-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 25px;
+  flex-grow: 1;
+
+  &__title {
+    font-size: 3rem;
+    margin-top: 0;
+    animation: fadeIn 1s ease;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 20px;
+  }
+
+  &__join_link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 2rem;
+    transition: all 0.3s ease;
+    margin: 10px;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.game-creation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex-grow: 1;
+
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+  }
+
+  &__title {
+    font-size: 3rem;
+    margin-bottom: 50px;
+    animation: fadeIn 1s ease;
+  }
+
+  button {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: $primary;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: darken($primary, 10%);
+    }
+  }
+}

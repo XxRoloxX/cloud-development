@@ -29,9 +29,9 @@ export class GameController {
   }
 
   @Patch(':id/join')
-  async joinGame(@Param() params: any): Promise<GameDto> {
+  async joinGame(@Param() params: any, @Body() body): Promise<GameDto> {
     try {
-      return await this.gameService.joinGame(params.id);
+      return await this.gameService.joinGame(body.id, body.playerTurn);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
     }

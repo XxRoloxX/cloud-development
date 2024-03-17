@@ -20,6 +20,6 @@ export class GameEntity {
   @Column({ nullable: true, default: null })
   player2_id: string | null;
 
-  @OneToMany(() => MoveEntity, (move) => move.game)
+  @OneToMany(() => MoveEntity, (move) => move.game, { cascade: true })
   moves: MoveEntity[];
 }
