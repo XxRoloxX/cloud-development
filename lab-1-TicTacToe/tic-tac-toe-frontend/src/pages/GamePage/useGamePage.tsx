@@ -11,7 +11,7 @@ const useGamePage = () => {
   }>();
 
   const [game, setGame] = useState<Game | null>(null);
-  const [isPending, setIsPending] = useState(true);
+  const [isPending, setIsPending] = useState(false);
   const socket = useWebsockets();
 
   useEffect(() => {

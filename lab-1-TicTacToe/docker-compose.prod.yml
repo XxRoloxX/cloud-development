@@ -1,6 +1,9 @@
 services:
   frontend:
-    build: ./tic-tac-toe-frontend
+    build:
+      context: ./tic-tac-toe-frontend/
+      args:
+        - VITE_API_URL=${VITE_API_URL}
     container_name: tic-tac-toe_frontend_prod
     environment:
       VITE_API_URL: ${VITE_API_URL}

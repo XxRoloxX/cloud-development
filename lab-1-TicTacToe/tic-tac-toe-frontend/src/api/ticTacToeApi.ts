@@ -16,6 +16,7 @@ export const createGame = async (): Promise<Game> => {
   return response.data;
 };
 export const getAllGames = async (): Promise<Game[]> => {
+  console.log("API_URL", API_URL);
   const response = await ticTacToeAxios.get("/game");
   return response.data;
 };

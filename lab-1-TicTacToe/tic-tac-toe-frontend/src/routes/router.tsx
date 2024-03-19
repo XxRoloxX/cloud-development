@@ -10,6 +10,7 @@ const RouterComponent = () => {
       <Routes>
         <Route path="/game/:id/:playerTurn" element={<GamePage />} />
         <Route path="/" element={<Home />} />
+        <Route path="*" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );

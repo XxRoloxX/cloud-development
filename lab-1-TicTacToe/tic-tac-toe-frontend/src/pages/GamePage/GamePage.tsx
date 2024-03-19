@@ -16,8 +16,8 @@ const GamePage = () => {
         return "It's a draw!";
       case GameStatus.IN_PROGRESS:
         return `It's ${playerTurn == game?.currentTurn ? "your" : "enemy"}'s turn`;
-      case GameStatus.PENDING:
-        return "Waiting for other player to join";
+      default:
+        return "";
     }
   };
 
