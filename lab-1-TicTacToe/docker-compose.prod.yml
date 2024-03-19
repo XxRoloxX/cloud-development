@@ -8,8 +8,6 @@ services:
     environment:
       VITE_API_URL: ${VITE_API_URL}
     working_dir: /app
-    volumes:
-      - "./tic-tac-toe-frontend:/app"
     ports:
       - 127.0.0.1:80:80
   backend:
@@ -22,8 +20,6 @@ services:
       - POSTGRES_HOST=${POSTGRES_HOST}
     ports:
       - 127.0.0.1:8080:8080
-    volumes:
-      - "./tic-tac-toe-backend:/app"
     working_dir: /app
     networks:
       - backend
