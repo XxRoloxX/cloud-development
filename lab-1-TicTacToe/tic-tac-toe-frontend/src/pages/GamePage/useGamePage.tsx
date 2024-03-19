@@ -49,10 +49,12 @@ const useGamePage = () => {
     if (game.status === GameStatus.IN_PROGRESS) {
       setIsPending(false);
     }
-    socket.joinGame(Number(game_id), playerTurn as PlayerTurn);
+
     socket.listenForJoinGame(Number(game_id), () => {
       handleJoinGame();
     });
+
+    socket.joinGame(Number(game_id), playerTurn as PlayerTurn);
   }, [game_id, playerTurn, socket, handleJoinGame]);
 
   const handleMakingMove = (position: number) => {

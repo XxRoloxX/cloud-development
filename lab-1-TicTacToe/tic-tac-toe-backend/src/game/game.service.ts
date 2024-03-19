@@ -29,6 +29,7 @@ export class GameService {
     const playersMovesInSequence = game.moves
       .filter(sequenceCondition);
 
+
     if (playersMovesInSequence.length !== 3) {
       return null;
     }

@@ -15,7 +15,7 @@ const GamePage = () => {
       case GameStatus.DRAW:
         return "It's a draw!";
       case GameStatus.IN_PROGRESS:
-        return `It's ${playerTurn == game?.currentTurn ? "your" : "enemy"}'s turn`;
+        return `It's ${playerTurn == game?.currentTurn ? "your" : "your opponent's"} turn`;
       default:
         return "";
     }
