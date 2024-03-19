@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import "./Home.style.scss";
 import { createGame, getAllGames } from "../../api/ticTacToeApi";
 import { useEffect, useState } from "react";
