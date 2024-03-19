@@ -53,7 +53,7 @@ export class GameService {
     return this.checkIfSequenceIsWonByPlayer(game, (move) => move.positionX + move.positionY === 2);
   }
   private isColumnWonByPlayer(game: GameEntity): PlayerTurn | null {
-    for (const column of Array(3).fill(0)) {
+    for (const column of Array(3).fill(0).keys()) {
       const columnWinner = this.checkIfSequenceIsWonByPlayer(game, (move) => move.positionY === column);
       if (columnWinner) {
         return columnWinner;
@@ -62,7 +62,7 @@ export class GameService {
     return null;
   }
   private isRowWonByPlayer(game: GameEntity): PlayerTurn | null {
-    for (const row of Array(3).fill(0)) {
+    for (const row of Array(3).fill(0).keys()) {
       const rowWinner = this.checkIfSequenceIsWonByPlayer(game, (move) => move.positionX === row);
       if (rowWinner) {
         return rowWinner;
