@@ -1,12 +1,28 @@
 import "./GamePage.style.scss";
 import useGamePage from "./useGamePage";
 import GameBoard from "../../components/GameBoard/GameBoard";
+import { GameStatus } from "../../api/types";
 
 const GamePage = () => {
-  const { game, isPending, handleMakingMove } = useGamePage();
+  const { game, isPending, handleMakingMove, playerTurn } = useGamePage();
+
+  const mapGameStatusToText = (status: GameStatus) => {
+    switch (status) {
+      case GameStatus.PLAYER1_WON:
+        return `You ${playerTurn == game?.currentTurn ? "won" : "lost"}!`;
+      case GameStatus.PLAYER2_WON:
+        return `You ${playerTurn == game?.currentTurn ? "lost" : "won"}!`;
+      case GameStatus.DRAW:
+        return "It's a draw!";
+      case GameStatus.IN_PROGRESS:
+        return `It's ${playerTurn == game?.currentTurn ? "your" : "enemy"}'s turn`;
+      case GameStatus.PENDING:
+        return "Waiting for other player to join";
+    }
+  };
 
   return (
-    <div>
+    <div className="game-page-container">
       {isPending ? (
         <div>
           <div className="loading-page-text">
@@ -16,6 +32,9 @@ const GamePage = () => {
         </div>
       ) : (
         <div>
+          <div className="game-status">
+            {game ? mapGameStatusToText(game?.status) : ""}
+          </div>
           <GameBoard game={game} onClick={handleMakingMove} />
         </div>
       )}

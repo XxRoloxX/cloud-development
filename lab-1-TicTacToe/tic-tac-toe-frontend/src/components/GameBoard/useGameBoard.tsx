@@ -4,7 +4,8 @@ import {
   CellState,
   GameBoardProps,
 } from "../../interfaces/gameBoard";
-import { MoveDto } from "../../api/types";
+import { MoveDto, PlayerTurn } from "../../api/types";
+import { useParams } from "react-router-dom";
 
 const createEmptyBoard = (): CellProps[] => {
   return Array(9)
@@ -50,14 +51,25 @@ const sortCellsByPosition = (squareProps: CellProps[]) => {
 
 const useGameBoard = (props: GameBoardProps) => {
   const [cells, setCells] = useState<CellProps[]>([]);
-  // console.log(props.game);
+
+  const { playerTurn } = useParams<{
+    id: string;
+    playerTurn: PlayerTurn;
+  }>();
+
+  const getColorClass = () => {
+    return playerTurn === PlayerTurn.Player1
+      ? "game__cell__hover--player1"
+      : "game__cell__hover--player2";
+  };
+
   useEffect(() => {
     if (props.game == null) return;
     const fullBoard = sortCellsByPosition(fillBoard(props.game.moves));
     setCells(fullBoard);
   }, [props.game]);
 
-  return { cells };
+  return { cells, style: getColorClass() };
 };
 
 export default useGameBoard;

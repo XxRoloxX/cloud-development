@@ -1,7 +1,9 @@
 export enum GameStatus {
   PENDING = "PENDING",
   IN_PROGRESS = "IN_PROGRESS",
-  FINISHED = "FINISHED",
+  PLAYER1_WON = "PLAYER1_WON",
+  PLAYER2_WON = "PLAYER2_WON",
+  DRAW = "DRAW",
 }
 
 export enum PlayerTurn {
@@ -34,6 +36,8 @@ export interface Game {
   player1_id: string | null;
 
   player2_id: string | null;
+
+  currentTurn: PlayerTurn;
 
   moves: MoveDto[];
 }

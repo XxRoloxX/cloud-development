@@ -106,9 +106,13 @@
 
   &__join-link--inactive {
     @extend .game-list__join-link;
-    // background-color: $secondary;
     color: grey;
     cursor: default;
+
+    &:hover {
+      transform: none !important;
+      animation: none !important;
+    }
   }
 }
 

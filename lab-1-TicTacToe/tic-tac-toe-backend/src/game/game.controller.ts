@@ -27,10 +27,8 @@ export class GameController {
 
   @Get(':id')
   findOne(@Param() params: any): Promise<GameDto> {
-    this.gameService.findOne(params.id).then((game) => {
-      // console.log("game: ", game)
-
-    })
+    // this.gameService.findOne(params.id).then((game) => {
+    // })
     return this.gameService.findOne(params.id);
   }
 
@@ -39,6 +37,7 @@ export class GameController {
     try {
       const result = await this.gameService.joinGame(body.id, body.playerTurn);
       this.eventsGateway.announceJoinGame(result);
+      this.eventsGateway.announceNewGame(result);
       return result;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST)

@@ -25,6 +25,83 @@ export class GameService {
     return this.gameRepository.findOne({ where: { id }, relations: ["moves"] });
   }
 
+  private checkIfSequenceIsWonByPlayer(game: GameEntity, sequenceCondition: (move: MoveEntity) => boolean) {
+    const playersMovesInSequence = game.moves
+      .filter(sequenceCondition);
+
+    if (playersMovesInSequence.length !== 3) {
+      return null;
+    }
+
+    const playersInSequence = playersMovesInSequence
+      .reduce((acc, move) => {
+        acc.add(move.playerTurn);
+        return acc;
+      }, new Set());
+
+    if (playersInSequence.size !== 1) {
+      return null;
+    }
+
+    return playersMovesInSequence[0].playerTurn;
+  }
+
+  private isDiagonalWonByPlayer(game: GameEntity): PlayerTurn | null {
+    return this.checkIfSequenceIsWonByPlayer(game, (move) => move.positionX === move.positionY);
+  }
+  private isReverseDiagonalWonByPlayer(game: GameEntity): PlayerTurn | null {
+    return this.checkIfSequenceIsWonByPlayer(game, (move) => move.positionX + move.positionY === 2);
+  }
+  private isColumnWonByPlayer(game: GameEntity): PlayerTurn | null {
+    for (const column of Array(3).fill(0)) {
+      const columnWinner = this.checkIfSequenceIsWonByPlayer(game, (move) => move.positionY === column);
+      if (columnWinner) {
+        return columnWinner;
+      }
+    }
+    return null;
+  }
+  private isRowWonByPlayer(game: GameEntity): PlayerTurn | null {
+    for (const row of Array(3).fill(0)) {
+      const rowWinner = this.checkIfSequenceIsWonByPlayer(game, (move) => move.positionX === row);
+      if (rowWinner) {
+        return rowWinner;
+      }
+    }
+    return null;
+  }
+  private isGameWonByPlayer(game: GameEntity) {
+    return this.isDiagonalWonByPlayer(game)
+      || this.isReverseDiagonalWonByPlayer(game)
+      || this.isColumnWonByPlayer(game)
+      || this.isRowWonByPlayer(game);
+  }
+
+
+  private updateGameStatus(game: GameEntity) {
+    console.log("Update game status", game)
+    switch (game.status) {
+      case GameStatus.PENDING:
+        if (game.player1_id && game.player2_id) {
+          game.status = GameStatus.IN_PROGRESS;
+        }
+        break;
+      case GameStatus.IN_PROGRESS:
+        const winner = this.isGameWonByPlayer(game);
+        console.log("Check winner", winner)
+        if (winner) {
+          game.status = winner === PlayerTurn.Player1 ? GameStatus.PLAYER1_WON : GameStatus.PLAYER2_WON;
+        } else if (game.moves.length === 9) {
+          game.status = GameStatus.DRAW;
+        }
+        break;
+      default:
+        break;
+
+    }
+
+  }
+
   private addPlayerToGame(game: GameEntity, playerTurn: PlayerTurn): GameEntity {
     switch (playerTurn) {
       case PlayerTurn.Player1:
@@ -94,15 +171,12 @@ export class GameService {
       throw new Error(`It's not player ${moveDto.playerTurn} turn`);
     }
 
-    if (game.moves && game.moves.length >= 9) {
-      throw new Error(`Game ${moveDto.gameId} is full`);
-    }
     console.log(moveDto)
     console.log(game.moves)
     if (!game.moves) {
       game.moves = [];
-      console.log("First move")
     }
+
     const moves = game.moves;
     const move = new MoveEntity();
     move.playerTurn = moveDto.playerTurn;
@@ -110,11 +184,12 @@ export class GameService {
     move.positionY = moveDto.positionY;
     moves.push(move);
     game.moves = moves;
+    this.updateGameStatus(game);
     this.changeTurn(game);
+
     return this.gameRepository.save(game);
-
-
   }
+
 
   async createGame(): Promise<GameEntity> {
     const gameEntity = new GameEntity();

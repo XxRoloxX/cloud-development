@@ -9,9 +9,10 @@ export interface Position {
   x: number;
   y: number;
 }
-export interface CellProps {
+export interface CellProps extends React.HTMLProps<HTMLButtonElement> {
   position: Position;
   value: CellState;
+  defaultStyle?: string;
 }
 
 export interface GameBoardProps {

@@ -20,17 +20,17 @@ const JoinGameLink = ({
     return playerTurn === PlayerTurn.Player1 ? "X" : "O";
   };
 
-  return (
+  return isSlotFree() ? (
     <Link
       to={`/game/${game.id}/${playerTurn}`}
-      className={
-        isSlotFree()
-          ? "game-list__join-link--active"
-          : "game-list__join-link--inactive"
-      }
+      className={"game-list__join-link--active"}
     >
       {mapPlayerToTurnIcon()}
     </Link>
+  ) : (
+    <div className={"game-list__join-link--inactive"}>
+      {mapPlayerToTurnIcon()}
+    </div>
   );
 };
 

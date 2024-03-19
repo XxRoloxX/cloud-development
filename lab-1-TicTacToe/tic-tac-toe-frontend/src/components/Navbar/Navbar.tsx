@@ -6,9 +6,9 @@ const Navbar = () => {
     <nav className="navbar">
       <h1 className="navbar__branding">Tic Tac Toe</h1>
       <ul className="navbar__links">
-        <li className="navbar__link">
-          <Link to=".">Home</Link>
-        </li>
+        <Link className="navbar__link" to=".">
+          Home
+        </Link>
       </ul>
     </nav>
   );

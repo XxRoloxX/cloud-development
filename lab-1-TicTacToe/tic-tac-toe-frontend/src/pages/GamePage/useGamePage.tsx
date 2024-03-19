@@ -30,7 +30,7 @@ const useGamePage = () => {
     if (typeof game_id !== "string") return null;
     const game = game_id ? await getGame(game_id as unknown as number) : null;
     setGame(game);
-    if (game?.status === GameStatus.IN_PROGRESS) {
+    if (game?.status !== GameStatus.PENDING) {
       setIsPending(false);
     }
     return game;
@@ -50,8 +50,7 @@ const useGamePage = () => {
       setIsPending(false);
     }
     socket.joinGame(Number(game_id), playerTurn as PlayerTurn);
-    socket.listenForJoinGame(Number(game_id), (data) => {
-      console.log("game joined", data);
+    socket.listenForJoinGame(Number(game_id), () => {
       handleJoinGame();
     });
   }, [game_id, playerTurn, socket, handleJoinGame]);
@@ -68,7 +67,7 @@ const useGamePage = () => {
     socket.makeMove(move);
   };
 
-  return { game, isPending, handleMakingMove };
+  return { game, isPending, handleMakingMove, playerTurn };
 };
 
 export default useGamePage;

@@ -1,5 +1,25 @@
 @import "../../global/variables.scss";
 
+@mixin change-color($name, $color) {
+  @keyframes #{$name} {
+    0% {
+      background-color: $cell-color;
+    }
+
+    50% {
+      background-color: $color;
+    }
+
+    100% {
+      background-color: $cell-color;
+    }
+  }
+}
+
+@include change-color(player-one-color-animation, $player1-color);
+@include change-color(player-two-color-animation, $player2-color);
+@include change-color(empty-cell-color-animation, white);
+
 .game {
   display: flex;
   flex-direction: column;
@@ -43,11 +63,53 @@
     padding: 10px;
     color: $cell-symbol-color;
 
-    &:hover {
-      background-color: $cell-hover-color;
-      // transform: scale(1.05) filter brightness(1.1);
-      transform: scale(1.05);
-      filter: brightness(1.5);
+    &--player1 {
+      color: $player1-color;
+      animation: player-one-color-animation 1s;
+      border-color: $player1-color !important;
+      transition: all 0.5s;
+
+      &:hover {
+        background-color: color-mix(in srgb $player1-color 25%,
+            $cell-hover-color );
+        transform: scale(1.05);
+        filter: brightness(1.5);
+      }
+    }
+
+    &--player2 {
+      color: $player2-color;
+      animation: player-two-color-animation 1s;
+      border-color: $player2-color !important;
+      transition: all 0.5s;
+
+      &:hover {
+        background-color: color-mix(in srgb,
+            $player2-color 25%,
+            $cell-hover-color );
+        transform: scale(1.05);
+      }
+    }
+
+    &__hover--player1 {
+      &:hover {
+        background-color: color-mix(in srgb $player1-color 25%,
+            $cell-hover-color );
+        transform: scale(1.05);
+        filter: brightness(1.5);
+        border-color: $player1-color !important;
+      }
+    }
+
+    &__hover--player2 {
+      &:hover {
+        background-color: color-mix(in srgb,
+            $player2-color 25%,
+            $cell-hover-color ) !important;
+        transform: scale(1.05);
+        border-color: $player2-color !important;
+        filter: brightness(1.5);
+      }
     }
 
     @media (max-width: 762px) {
@@ -57,7 +119,8 @@
     }
   }
 
-  &__cell--X {
+  &__cell--selected {
     @extend .game__cell;
+    animation: change-color 1s;
   }
 }

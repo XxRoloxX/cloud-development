@@ -10,6 +10,20 @@
   }
 }
 
+@keyframes glow-up {
+  0% {
+    color: white;
+  }
+
+  50% {
+    color: $primary;
+  }
+
+  100% {
+    color: white;
+  }
+}
+
 @keyframes fading {
   0% {
     opacity: 0.4;
@@ -22,6 +36,14 @@
   100% {
     opacity: 0.4;
   }
+}
+
+.game-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
 }
 
 .loading-page-text {
@@ -39,4 +61,13 @@
   margin: auto;
   width: 120px;
   height: 120px;
+}
+
+.game-status {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  margin: auto;
+  width: 300px;
+  text-align: center;
+  animation: glow-up 2s infinite;
 }

@@ -4,7 +4,9 @@ import { IsNumber, Max, Min, ValidateNested } from 'class-validator';
 export enum GameStatus {
   PENDING = 'PENDING',
   IN_PROGRESS = 'IN_PROGRESS',
-  FINISHED = 'FINISHED',
+  PLAYER1_WON = 'PLAYER1_WON',
+  PLAYER2_WON = 'PLAYER2_WON',
+  DRAW = 'DRAW',
 }
 
 export enum PlayerTurn {
