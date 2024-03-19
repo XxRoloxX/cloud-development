@@ -1,4 +1,4 @@
-import { GameStatus } from 'src/common/game';
+import { GameStatus, PlayerTurn } from 'src/common/game';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { MoveEntity } from './move.entity';
 
@@ -13,6 +13,14 @@ export class GameEntity {
     default: GameStatus.PENDING
   })
   status: GameStatus;
+
+  @Column({
+    type: "enum",
+    enum: PlayerTurn,
+    default: PlayerTurn.Player1
+
+  })
+  currentTurn: PlayerTurn;
 
   @Column({ nullable: true, default: null })
   player1_id: string | null;

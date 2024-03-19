@@ -22,9 +22,9 @@ export class EventsGateway {
   //   // client.join(payload.gameId);
   // }
   @SubscribeMessage("move")
-  handleMove(@MessageBody() move: MoveDto) {
+  async handleMove(@MessageBody() move: MoveDto) {
     try {
-      this.gameService.makeMove(move)
+      await this.gameService.makeMove(move)
       this.server.emit(`move/${move.gameId}`, move)
     } catch (e) {
       console.log(e)

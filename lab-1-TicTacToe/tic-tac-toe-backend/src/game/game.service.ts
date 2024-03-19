@@ -65,23 +65,45 @@ export class GameService {
 
   }
 
+  isFieldAlreadyTaken(game: GameEntity, positionX: number, positionY: number): boolean {
+    if (!game.moves) {
+      return false;
+    }
+    return game.moves.some((move) => move.positionX === positionX && move.positionY === positionY);
+  }
+
+  changeTurn(game: GameEntity) {
+    if (game.currentTurn === PlayerTurn.Player1) {
+      game.currentTurn = PlayerTurn.Player2;
+    } else {
+      game.currentTurn = PlayerTurn.Player1;
+    }
+    return game;
+  }
+
   async makeMove(moveDto: MoveDto) {
-    const game = await this.gameRepository.findOneBy({ id: moveDto.gameId });
+    const game = await this.gameRepository.findOne({ where: { id: moveDto.gameId }, relations: ["moves"] });
     if (!game) {
       throw new Error(`Game ${moveDto.gameId} not found`);
     }
     if (game.status !== GameStatus.IN_PROGRESS) {
       throw new Error(`Game ${moveDto.gameId} is not in progress`);
     }
-    // if (game.player1_id !== moveDto.playerTurn && game.player2_id !== moveDto.playerTurn) {
-    //   throw new Error(`Player ${moveDto.playerTurn} is not in game ${moveDto.gameId}`);
-    // }
+    if (this.isFieldAlreadyTaken(game, moveDto.positionX, moveDto.positionY)) {
+      throw new Error(`Field ${moveDto.positionX}, ${moveDto.positionY} is already taken`);
+    }
+    if (game.currentTurn !== moveDto.playerTurn) {
+      throw new Error(`It's not player ${moveDto.playerTurn} turn`);
+    }
+
     if (game.moves && game.moves.length >= 9) {
       throw new Error(`Game ${moveDto.gameId} is full`);
     }
     console.log(moveDto)
+    console.log(game.moves)
     if (!game.moves) {
       game.moves = [];
+      console.log("First move")
     }
     const moves = game.moves;
     const move = new MoveEntity();
@@ -90,6 +112,7 @@ export class GameService {
     move.positionY = moveDto.positionY;
     moves.push(move);
     game.moves = moves;
+    this.changeTurn(game);
     return this.gameRepository.save(game);
 
 
