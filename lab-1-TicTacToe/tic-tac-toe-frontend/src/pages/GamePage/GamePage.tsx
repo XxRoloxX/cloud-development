@@ -1,7 +1,7 @@
 import "./GamePage.style.scss";
 import useGamePage from "./useGamePage";
 import GameBoard from "../../components/GameBoard/GameBoard";
-import { GameStatus } from "../../api/types";
+import { GameStatus, PlayerTurn } from "../../api/types";
 
 const GamePage = () => {
   const { game, isPending, handleMakingMove, playerTurn } = useGamePage();
@@ -9,9 +9,9 @@ const GamePage = () => {
   const mapGameStatusToText = (status: GameStatus) => {
     switch (status) {
       case GameStatus.PLAYER1_WON:
-        return `You ${playerTurn == game?.currentTurn ? "won" : "lost"}!`;
+        return `You ${playerTurn == PlayerTurn.Player1 ? "won" : "lost"}!`;
       case GameStatus.PLAYER2_WON:
-        return `You ${playerTurn == game?.currentTurn ? "lost" : "won"}!`;
+        return `You ${playerTurn == PlayerTurn.Player2 ? "lost" : "won"}!`;
       case GameStatus.DRAW:
         return "It's a draw!";
       case GameStatus.IN_PROGRESS:
