@@ -44,14 +44,14 @@ const Home = () => {
                 <Link
                   to={`/game/${game.id}/Player1`}
                   className="game-list__item"
-                  key={game.id}
+                  key={game.id + "Player1"}
                 >
                   Game {game.id} Player 1
                 </Link>
                 <Link
                   to={`/game/${game.id}/Player2`}
                   className="game-list__item"
-                  key={game.id}
+                  key={game.id + "Player2"}
                 >
                   Game {game.id} Player 2
                 </Link>

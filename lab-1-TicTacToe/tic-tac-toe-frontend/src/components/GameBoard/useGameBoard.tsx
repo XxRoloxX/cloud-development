@@ -41,10 +41,10 @@ const fillBoard = (moves: MoveDto[]): CellProps[] => {
 
 const sortCellsByPosition = (squareProps: CellProps[]) => {
   return [...squareProps].sort((squareA: CellProps, squareB: CellProps) => {
-    if (squareA.position.x === squareB.position.x) {
-      return squareA.position.y - squareB.position.y;
+    if (squareA.position.y === squareB.position.y) {
+      return squareA.position.x - squareB.position.x;
     }
-    return squareA.position.x - squareB.position.x;
+    return squareA.position.y - squareB.position.y;
   });
 };
 
