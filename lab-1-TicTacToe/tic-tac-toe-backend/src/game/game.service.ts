@@ -2,12 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GameEntity } from 'src/entity/game.entity';
 import { Repository } from 'typeorm';
-import { CreateGameDTO } from './dto/createGame.dto';
 import { GameStatus, PlayerTurn } from 'src/common/game';
 import { getRandomName } from 'src/common/randomUtils';
 import { MoveDto } from './dto/move.dto';
 import { MoveEntity } from 'src/entity/move.entity';
-import { EventsGateway } from './game.socket';
 
 @Injectable()
 export class GameService {

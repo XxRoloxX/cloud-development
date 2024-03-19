@@ -1,0 +1,41 @@
+@import "../../global/variables.scss";
+
+.navbar {
+  width: 100vw;
+  height: 70px;
+  background-color: $light-grey-color;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: absolute;
+  margin: 0;
+  top: 0;
+  left: 0;
+
+  &__branding {
+    font-size: 1.5rem;
+    font-weight: 700;
+    width: 200px;
+    color: $primary;
+  }
+
+  &__links {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    margin-left: auto;
+
+    &__link {
+      color: $primary;
+      font-size: 1.2rem;
+      margin: 0 10px;
+      cursor: pointer;
+      transition: color 0.3s;
+
+      &:hover {
+        color: $cell-hover-color;
+      }
+    }
+  }
+}
