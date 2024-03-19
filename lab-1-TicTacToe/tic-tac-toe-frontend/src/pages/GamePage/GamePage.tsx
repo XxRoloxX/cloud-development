@@ -11,7 +11,7 @@ const GamePage = () => {
       case GameStatus.PLAYER1_WON:
         return `You ${playerTurn == PlayerTurn.Player1 ? "won" : "lost"}!`;
       case GameStatus.PLAYER2_WON:
-        return `You ${playerTurn == PlayerTurn.Player2 ? "lost" : "won"}!`;
+        return `You ${playerTurn == PlayerTurn.Player1 ? "lost" : "won"}!`;
       case GameStatus.DRAW:
         return "It's a draw!";
       case GameStatus.IN_PROGRESS:
