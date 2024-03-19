@@ -1,9 +1,8 @@
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import { GameService } from "./game.service";
-import { Move, PlayerTurn } from "src/common/game";
 import { MoveDto } from "./dto/move.dto";
-
+import { GameEntity } from "src/entity/game.entity";
 @WebSocketGateway({
   cors: {
     origin: "*",
@@ -15,20 +14,28 @@ export class EventsGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage("join-game")
-  handleJoinGame(@MessageBody() data: any) {
-    console.log("join-game")
-    console.log(data)
-    // client.join(payload.gameId);
-  }
+  // @SubscribeMessage("join")
+  // handleJoinGame(@MessageBody() data: any) {
+  //   console.log("join-game")
+  //   console.log(data)
+  //   this.server.emit(`join/${data.gameId}`, data)
+  //   // client.join(payload.gameId);
+  // }
   @SubscribeMessage("move")
   handleMove(@MessageBody() move: MoveDto) {
-    console.log(move)
     try {
       this.gameService.makeMove(move)
+      this.server.emit(`move/${move.gameId}`, move)
     } catch (e) {
       console.log(e)
     }
-    // client.join(payload.gameId);
+  }
+
+  announceJoinGame(game: GameEntity) {
+    this.server.emit(`join/${game.id}`, game)
+  }
+
+  announceNewGame(game: GameEntity) {
+    this.server.emit('new-game', game);
   }
 }

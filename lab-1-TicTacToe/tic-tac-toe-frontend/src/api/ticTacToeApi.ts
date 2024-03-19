@@ -43,7 +43,7 @@ export const connectToWebsocket = () => {
 export const handleWebsocketMessage = (
   socket: Socket,
   event: string,
-  callback: (data: any) => void,
+  callback: (data: unknown) => void,
 ) => {
   socket.on(event, callback);
 };

@@ -9,7 +9,7 @@ import { EventsGateway } from './game.socket';
 
 @Module({
   controllers: [GameController],
-  providers: [GameService, EventsGateway],
+  providers: [EventsGateway, GameService,],
   imports: [MovesModule, TypeOrmModule.forFeature([GameEntity, MoveEntity])],
 })
 export class GameModule { }

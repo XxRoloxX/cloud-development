@@ -7,6 +7,7 @@ import { GameStatus, PlayerTurn } from 'src/common/game';
 import { getRandomName } from 'src/common/randomUtils';
 import { MoveDto } from './dto/move.dto';
 import { MoveEntity } from 'src/entity/move.entity';
+import { EventsGateway } from './game.socket';
 
 @Injectable()
 export class GameService {
@@ -17,6 +18,10 @@ export class GameService {
 
   findAll(): Promise<GameEntity[]> {
     return this.gameRepository.find({ where: {}, relations: ["moves"] });
+  }
+
+  findAllPending(): Promise<GameEntity[]> {
+    return this.gameRepository.find({ where: { status: GameStatus.PENDING }, relations: ["moves"] });
   }
   findOne(id: number): Promise<GameEntity> {
     return this.gameRepository.findOne({ where: { id }, relations: ["moves"] });
@@ -55,9 +60,11 @@ export class GameService {
     if (game.status !== GameStatus.PENDING) {
       throw new Error(`Game ${id} is not pending`);
     }
-    return this.gameRepository.save(this.addPlayerToGame(game, playerTurn));
+    const result = await this.gameRepository.save(this.addPlayerToGame(game, playerTurn));
+    return result;
 
   }
+
   async makeMove(moveDto: MoveDto) {
     const game = await this.gameRepository.findOneBy({ id: moveDto.gameId });
     if (!game) {
@@ -88,8 +95,10 @@ export class GameService {
 
   }
 
-  createGame(): Promise<CreateGameDTO> {
+  async createGame(): Promise<GameEntity> {
     const gameEntity = new GameEntity();
-    return this.gameRepository.save(gameEntity);
+    const result = await this.gameRepository.save(gameEntity);
+    // this.gameSocket.announceNewGame(result);
+    return result;
   }
 }

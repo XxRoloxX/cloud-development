@@ -1,44 +1,50 @@
 import { Link } from "react-router-dom";
 import "./Home.style.scss";
-import { createGame, getAllGames, joinGame } from "../../api/ticTacToeApi";
+import { createGame, getAllGames } from "../../api/ticTacToeApi";
 import { useEffect, useState } from "react";
-import { Game, PlayerTurn } from "../../api/types";
-// import useWebsockets from "../../hooks/useWebsockets";
+import { Game } from "../../api/types";
+import useWebsockets from "../../hooks/useWebsockets";
 
 const Home = () => {
   const [games, setGames] = useState<Game[]>([]);
 
-  // const socket = useWebsockets();
+  const socket = useWebsockets();
 
-  // const handleJoinGame = (gameId: number, player: PlayerTurn) => {
-  //   socket.emit("join-game", gameId);
-  // };
+  const fetchGames = async () => {
+    try {
+      const games = await getAllGames();
+      setGames(games);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const games = await getAllGames();
-        setGames(games);
-      } catch (error) {}
+    const handleNewGame = () => {
+      socket.listenForNewGame(() => {
+        fetchGames();
+      });
     };
+    handleNewGame();
     fetchGames();
+    return () => {
+      socket.unListenForNewGame();
+    };
   }, []);
+
   return (
     <div className="home-page">
       <h1 className="home-page__title">Welcome to Tic Tac Toe</h1>
       <div className="home-page__components">
         <div className="game-list">
           <p className="game-list__title">Join a game</p>
-          {games.map((game: any) => {
+          {games.map((game: Game) => {
             return (
               <div className="game-list__item" key={game.id}>
                 <Link
                   to={`/game/${game.id}/Player1`}
                   className="game-list__item"
                   key={game.id}
-                  onClick={() => {
-                    joinGame(game.id, PlayerTurn.Player1);
-                  }}
                 >
                   Game {game.id} Player 1
                 </Link>
@@ -46,9 +52,6 @@ const Home = () => {
                   to={`/game/${game.id}/Player2`}
                   className="game-list__item"
                   key={game.id}
-                  onClick={() => {
-                    joinGame(game.id, PlayerTurn.Player2);
-                  }}
                 >
                   Game {game.id} Player 2
                 </Link>
