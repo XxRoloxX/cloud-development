@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import "./Home.style.scss";
 import { createGame, getAllGames } from "../../api/ticTacToeApi";
 import { useEffect, useState } from "react";
-import { Game } from "../../api/types";
+import { Game, PlayerTurn } from "../../api/types";
 import useWebsockets from "../../hooks/useWebsockets";
+import JoinGameLink from "./JoinGameLink";
 
 const Home = () => {
   const [games, setGames] = useState<Game[]>([]);
@@ -41,20 +42,9 @@ const Home = () => {
           {games.map((game: Game) => {
             return (
               <div className="game-list__item" key={game.id}>
-                <Link
-                  to={`/game/${game.id}/Player1`}
-                  className="game-list__item"
-                  key={game.id + "Player1"}
-                >
-                  Game {game.id} Player 1
-                </Link>
-                <Link
-                  to={`/game/${game.id}/Player2`}
-                  className="game-list__item"
-                  key={game.id + "Player2"}
-                >
-                  Game {game.id} Player 2
-                </Link>
+                <div className="game-list__description">Game {game.id}</div>
+                <JoinGameLink game={game} playerTurn={PlayerTurn.Player1} />
+                <JoinGameLink game={game} playerTurn={PlayerTurn.Player2} />
               </div>
             );
           })}
