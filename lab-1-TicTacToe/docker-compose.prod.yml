@@ -1,29 +1,56 @@
 services:
-  # frontend:
-  #   build: ./tic-tac-toe-frontend/
-  #   ports:
-  #     - "3000:3000"
-  # backend:
-  #   build: ./tic-tac-toe-backend/
-  #   ports:
-  #     - "8080:8080"
-  #   networks:
-  #     - backend
+  frontend:
+    build: ./tic-tac-toe-frontend
+    container_name: tic-tac-toe_frontend_prod
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+    working_dir: /app
+    volumes:
+      - "./tic-tac-toe-frontend:/app"
+    ports:
+      - 127.0.0.1:80:80
+  backend:
+    container_name: tic-tac-toe_backend_prod
+    build: ./tic-tac-toe-backend
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+    ports:
+      - 127.0.0.1:8080:8080
+    volumes:
+      - "./tic-tac-toe-backend:/app"
+    working_dir: /app
+    networks:
+      - backend
   database:
     image: postgres:latest
+    container_name: tic-tac-toe_db_prod
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data-dev:/var/lib/postgresql/data
     networks:
       - backend
-
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: tic-tac-toe_admin_prod
+    restart: always
+    ports:
+      - "127.0.0.1:9999:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - backend
 networks:
   backend:
     driver: bridge
 volumes:
-  postgres-data:
+  postgres-data-dev:
+  pgadmin-data:
