@@ -7,6 +7,7 @@ services:
     container_name: tic-tac-toe_frontend_prod
     environment:
       VITE_API_URL: ${VITE_API_URL}
+      VIRTUAL_HOST: ${FRONTEND_HOST}
     working_dir: /app
     ports:
       - 80:80
@@ -32,6 +33,16 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres-data-dev:/var/lib/postgresql/data
+    networks:
+      - backend
+  proxy:
+    image: nginx-proxy
+    container_name: tic-tac-toe_proxy_prod
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
     networks:
       - backend
   pgadmin:
