@@ -35,7 +35,7 @@ export class GameController {
   @Patch(':id/join')
   async joinGame(@Param() params: any, @Body() body): Promise<GameDto> {
     try {
-      const result = await this.gameService.joinGame(body.id, body.playerTurn);
+      const result = await this.gameService.joinGame(body.id, body.playerTurn, body.playerName);
       this.eventsGateway.announceJoinGame(result);
       this.eventsGateway.announceNewGame(result);
       return result;

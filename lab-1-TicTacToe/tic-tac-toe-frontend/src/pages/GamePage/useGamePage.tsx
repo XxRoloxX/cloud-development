@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Game, PlayerTurn, MoveDto, GameStatus } from "../../api/types";
 import { getGame, joinGame } from "../../api/ticTacToeApi";
+import { usePlayer } from "../../hooks/playerNameContext";
 
 const useGamePage = () => {
   const { id: game_id, playerTurn } = useParams<{
@@ -12,6 +13,7 @@ const useGamePage = () => {
 
   const [game, setGame] = useState<Game | null>(null);
   const [isPending, setIsPending] = useState(true);
+  const { playerName } = usePlayer();
   const socket = useWebsockets();
 
   useEffect(() => {
@@ -46,7 +48,11 @@ const useGamePage = () => {
   }, [fetchGame]);
 
   const checkGameStatus = useCallback(async () => {
-    const game = await joinGame(Number(game_id), playerTurn as PlayerTurn);
+    const game = await joinGame(
+      Number(game_id),
+      playerTurn as PlayerTurn,
+      playerName,
+    );
     if (game.status === GameStatus.IN_PROGRESS) {
       setIsPending(false);
     }

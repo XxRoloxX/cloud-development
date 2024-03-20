@@ -103,19 +103,19 @@ export class GameService {
 
   }
 
-  private addPlayerToGame(game: GameEntity, playerTurn: PlayerTurn): GameEntity {
+  private addPlayerToGame(game: GameEntity, playerTurn: PlayerTurn, playerName?: string): GameEntity {
     switch (playerTurn) {
       case PlayerTurn.Player1:
         if (game.player1_id) {
           throw new Error(`Game ${game.id} is full`);
         }
-        game.player1_id = getRandomName();
+        game.player1_id = playerName ?? getRandomName();
         break;
       case PlayerTurn.Player2:
         if (game.player2_id) {
           throw new Error(`Game ${game.id} is full`);
         }
-        game.player2_id = getRandomName();
+        game.player2_id = playerName ?? getRandomName();
         break;
       default:
         throw new Error(`Invalid playerTurn ${playerTurn}`);
@@ -128,7 +128,7 @@ export class GameService {
 
     return game;
   }
-  async joinGame(id: number, playerTurn: PlayerTurn): Promise<GameEntity> {
+  async joinGame(id: number, playerTurn: PlayerTurn, playerName?: string): Promise<GameEntity> {
     const game = await this.gameRepository.findOneBy({ id });
     if (!game) {
       throw new Error(`Game ${id} not found`);
@@ -136,7 +136,7 @@ export class GameService {
     if (game.status !== GameStatus.PENDING) {
       throw new Error(`Game ${id} is not pending`);
     }
-    const result = await this.gameRepository.save(this.addPlayerToGame(game, playerTurn));
+    const result = await this.gameRepository.save(this.addPlayerToGame(game, playerTurn, playerName));
     return result;
 
   }

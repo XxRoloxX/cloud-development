@@ -28,10 +28,15 @@ export const getGame = async (id: number): Promise<Game> => {
   return response.data;
 };
 
-export const joinGame = async (gameId: number, playerTurn: string) => {
+export const joinGame = async (
+  gameId: number,
+  playerTurn: string,
+  playerName: string | null,
+) => {
   const response = await ticTacToeAxios.patch(`/game/${gameId}/join`, {
     id: gameId,
     playerTurn,
+    playerName,
   });
   return response.data;
 };

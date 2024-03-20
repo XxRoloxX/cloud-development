@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { Game, PlayerTurn } from "../../api/types";
 import useWebsockets from "../../hooks/useWebsockets";
 import JoinGameLink from "./JoinGameLink";
+import { usePlayer } from "../../hooks/playerNameContext";
+import RandomGameJoinLink from "./RandomGameJoinLink";
 
 const Home = () => {
   const [games, setGames] = useState<Game[]>([]);
+  const { setPlayerName } = usePlayer();
 
   const socket = useWebsockets();
 
@@ -17,6 +20,12 @@ const Home = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handlePlayerNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setPlayerName(event.target.value);
   };
 
   useEffect(() => {
@@ -35,6 +44,15 @@ const Home = () => {
   return (
     <div className="home-page">
       <h1 className="home-page__title">Welcome to Tic Tac Toe</h1>
+      <div className="home-page__player-name">
+        <label className="home-page__player-name__label">Enter your name</label>
+        <input
+          className="home-page__player-name__input"
+          onChange={handlePlayerNameChange}
+        />
+      </div>
+
+      <RandomGameJoinLink games={games} />
       <div className="home-page__components">
         <div className="game-list">
           <p className="game-list__title">Join a game</p>

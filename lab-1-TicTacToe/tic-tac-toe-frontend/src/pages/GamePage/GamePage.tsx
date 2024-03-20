@@ -32,6 +32,16 @@ const GamePage = () => {
         </div>
       ) : (
         <div>
+          <div className="game-players-container">
+            <div className="player-info">
+              <div className="player-info__symbol">{"X"}</div>
+              <div className="player-info__name">{game?.player1_id}</div>
+            </div>
+            <div className="player-info">
+              <div className="player-info__symbol">{"O"}</div>
+              <div className="player-info__name">{game?.player2_id}</div>
+            </div>
+          </div>
           <div className="game-status">
             {game ? mapGameStatusToText(game?.status) : ""}
           </div>
