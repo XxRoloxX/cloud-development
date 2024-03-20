@@ -8,6 +8,7 @@
   justify-content: space-around;
   width: 100vw;
   padding-bottom: 50px;
+  padding-top: 100px;
 
   &__title {
     font-size: 3rem;
@@ -30,7 +31,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin-top: 1rem;
+    // margin-top: 1rem;    margin-top: 1rem;
     margin-bottom: 1rem;
 
     @media (max-width: 768px) {
