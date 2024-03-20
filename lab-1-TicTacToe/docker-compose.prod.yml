@@ -9,8 +9,6 @@ services:
       VITE_API_URL: ${VITE_API_URL}
       VIRTUAL_HOST: ${FRONTEND_HOST}
     working_dir: /app
-    ports:
-      - 80:80
   backend:
     container_name: tic-tac-toe_backend_prod
     build: ./tic-tac-toe-backend
