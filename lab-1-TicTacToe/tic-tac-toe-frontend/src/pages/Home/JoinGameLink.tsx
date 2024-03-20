@@ -16,16 +16,6 @@ const JoinGameLink = ({
     return !game.player2_id;
   };
 
-  const getAvailableTurn = (game: Game) => {
-    if (!game.player1_id) {
-      return PlayerTurn.Player1;
-    }
-    if (!game.player2_id) {
-      return PlayerTurn.Player2;
-    }
-    return null;
-  };
-
   const mapPlayerToTurnIcon = () => {
     if (playerTurn === null) {
       return "Random game";
@@ -48,3 +38,4 @@ const JoinGameLink = ({
 };
 
 export default JoinGameLink;
+
