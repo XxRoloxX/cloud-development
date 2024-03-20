@@ -8,6 +8,7 @@ services:
     environment:
       VITE_API_URL: ${VITE_API_URL}
       VIRTUAL_HOST: ${FRONTEND_HOST}
+      LETSENCRYPT_HOST: ${FRONTEND_HOST}
     working_dir: /app
     networks:
       - backend
@@ -43,8 +44,23 @@ services:
       - 443:443
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
     networks:
       - backend
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: tic-tac-toe_acme_prod
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - proxy
+    networks:
+      - backend
+    environment:
+      DEFAULT_EMAIL: ${DEFAULT_EMAIL}
   pgadmin:
     image: dpage/pgadmin4
     container_name: tic-tac-toe_admin_prod
