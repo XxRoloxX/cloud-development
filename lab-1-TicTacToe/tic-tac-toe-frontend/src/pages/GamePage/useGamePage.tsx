@@ -15,7 +15,7 @@ const useGamePage = () => {
   const socket = useWebsockets();
 
   useEffect(() => {
-    fetchGame();
+    // fetchGame();
     socket.listenForMove(Number(game_id), () => {
       fetchGame();
     });
@@ -23,6 +23,7 @@ const useGamePage = () => {
 
   useEffect(() => {
     checkGameStatus();
+    setTimeout(fetchGame, 100);
     return () => socket.unListenForJoinGame(Number(game_id));
   }, []);
 
