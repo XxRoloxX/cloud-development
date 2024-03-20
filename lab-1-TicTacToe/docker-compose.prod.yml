@@ -36,7 +36,7 @@ services:
     networks:
       - backend
   proxy:
-    image: nginx-proxy/nginx-proxy
+    image: nginxproxy/nginx-proxy
     container_name: tic-tac-toe_proxy_prod
     ports:
       - 80:80
