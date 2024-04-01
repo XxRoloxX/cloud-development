@@ -1,7 +1,3 @@
-# variable "ssh_host" {
-#   description = "SSH host with docker daemon running"
-#   type        = string
-# }
 variable "ssh_user" {
   description = "SSH user to use on remote host"
   type        = string
