@@ -14,19 +14,15 @@ provider "aws" {
   region = "us-east-1"
 }
 
-module "aws_network" {
-  source = "../aws_network/"
-}
-
 
 # Create a EC2 instance
-resource "aws_instance" "my-ec2" {
+resource "aws_instance" "my_ec2" {
   ami                         = data.aws_ami.amazon-linux.id
   instance_type               = "t2.micro"
-  key_name                    = aws_key_pair.adam-keys.key_name
-  vpc_security_group_ids      = [aws_security_group.my-sg.id]
+  key_name                    = aws_key_pair.ssh-key.key_name
+  vpc_security_group_ids      = [var.security_group_id]
   associate_public_ip_address = true
-  subnet_id                   = aws_subnet.my-subnet.id
+  subnet_id                   = var.subnet_id
   user_data                   = <<-EOF
                                 #!/bin/bash
                                 sudo yum install -y docker
@@ -40,8 +36,8 @@ resource "aws_instance" "my-ec2" {
 }
 
 
-resource "aws_key_pair" "adam-keys" {
-  key_name   = "adam-keys"
+resource "aws_key_pair" "ssh-key" {
+  key_name   = "ssh-key"
   public_key = var.ssh_key
 }
 

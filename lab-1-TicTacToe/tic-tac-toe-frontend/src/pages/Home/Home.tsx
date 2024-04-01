@@ -56,15 +56,17 @@ const Home = () => {
       <div className="home-page__components">
         <div className="game-list">
           <p className="game-list__title">Join a game</p>
-          {games.map((game: Game) => {
-            return (
-              <div className="game-list__item" key={game.id}>
-                <div className="game-list__description">Game {game.id}</div>
-                <JoinGameLink game={game} playerTurn={PlayerTurn.Player1} />
-                <JoinGameLink game={game} playerTurn={PlayerTurn.Player2} />
-              </div>
-            );
-          })}
+          {games && games.length > 0
+            ? games.map((game: Game) => {
+              return (
+                <div className="game-list__item" key={game.id}>
+                  <div className="game-list__description">Game {game.id}</div>
+                  <JoinGameLink game={game} playerTurn={PlayerTurn.Player1} />
+                  <JoinGameLink game={game} playerTurn={PlayerTurn.Player2} />
+                </div>
+              );
+            })
+            : ""}
         </div>
         <div className="game-creation">
           <div className="game-creation__title">Or create a new one</div>
