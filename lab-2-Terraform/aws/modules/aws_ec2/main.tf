@@ -10,10 +10,6 @@ terraform {
 }
 
 
-provider "aws" {
-  region = "us-east-1"
-}
-
 
 # Create a EC2 instance
 resource "aws_instance" "my_ec2" {

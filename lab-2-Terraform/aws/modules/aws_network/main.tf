@@ -9,12 +9,7 @@ terraform {
   required_version = ">= 1.2.0"
 }
 
-provider "aws" {
-  region = "us-east-1"
-}
 
-
-# Define the vpc and subnet
 resource "aws_vpc" "my-vpc" {
   cidr_block       = var.subnet_cidr_block
   instance_tenancy = "default"
