@@ -8,15 +8,6 @@ terraform {
 }
 
 
-
-# module "remote_docker" {
-#   source            = "./modules/remote_docker/"
-#   ssh_host          = element(module.ec2.public_ip, 0)
-#   ssh_user          = "ec2-user"
-#   registry_password = var.registry_password
-#   registry_username = var.registry_username
-# }
-
 data "terraform_remote_state" "host" {
   backend = "local"
   config = {

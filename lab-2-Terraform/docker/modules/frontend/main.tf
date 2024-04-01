@@ -9,7 +9,6 @@ terraform {
 
 
 resource "docker_image" "frontend" {
-  # name = "registry.rolo-labs.xyz/ttt-frontend"
   name = format("%s/ttt-frontend", var.registry_address)
 }
 

@@ -23,7 +23,7 @@ resource "aws_vpc" "my-vpc" {
     Name = "my-vpc"
   }
 }
-# Create security groups to allow inbound traffic on port 22 and 80 and outbound traffic on all ports
+
 resource "aws_security_group" "my-sg" {
   name        = "my-sg"
   description = "Allow inbound traffic on port 22 and 80"
@@ -62,7 +62,6 @@ resource "aws_security_group" "my-sg" {
 
 
 
-# Define gatway to connect the VPC to the internet
 resource "aws_internet_gateway" "my-igw" {
   vpc_id = aws_vpc.my-vpc.id
 
@@ -71,7 +70,6 @@ resource "aws_internet_gateway" "my-igw" {
   }
 }
 
-# Define routing table for the subnet
 resource "aws_route_table" "my-rt" {
   vpc_id = aws_vpc.my-vpc.id
 
@@ -94,7 +92,6 @@ resource "aws_subnet" "my-subnet" {
 }
 
 
-# Associate the route table with the subnet
 resource "aws_route_table_association" "my_rta" {
   subnet_id      = aws_subnet.my-subnet.id
   route_table_id = aws_route_table.my-rt.id
