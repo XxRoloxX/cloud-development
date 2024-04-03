@@ -21,5 +21,4 @@ resource "docker_container" "watchtower" {
     container_path = "/var/run/docker.sock"
     host_path      = "/var/run/docker.sock"
   }
-  depends_on = [docker_container.frontend, docker_container.backend]
 }
