@@ -55,6 +55,13 @@ module "backend" {
   depends_on        = [module.network, module.database]
 }
 
+module "watchtower" {
+  source            = "./modules/watchtower/"
+  registry_password = var.registry_password
+  registry_username = var.registry_username
+  depends_on        = [module.frontend, module.backend]
+}
+
 
 
 
