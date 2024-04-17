@@ -1,0 +1,83 @@
+{
+  "AWSDockerrunVersion": "3",
+  "containerDefinitions": [
+    {
+      "name": "frontend",
+      "image": "frontend",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80
+        }
+      ]
+    },
+    {
+      "name": "backend",
+      "image": "backend",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 8080
+        }
+      ],
+      "links": ["database"],
+      "environment": [
+        {
+          "name": "POSTGRES_USER",
+          "value": "${POSTGRES_USER}"
+        },
+        {
+          "name": "POSTGRES_PASSWORD",
+          "value": "${POSTGRES_PASSWORD}"
+        },
+        {
+          "name": "POSTGRES_DB",
+          "value": "${POSTGRES_DB}"
+        },
+        {
+          "name": "POSTGRES_HOST",
+          "value": "${POSTGRES_HOST}"
+        }
+      ]
+    },
+    {
+      "name": "database",
+      "image": "postgres",
+      "essential": true,
+      "links": ["backend"],
+      "memory": 128,
+      "volumeMounts": [
+        {
+          "sourceVolume": "database-data",
+          "containerPath": "/var/lib/postgresql/data"
+        }
+      ],
+      "environment": [
+        {
+          "name": "POSTGRES_USER",
+          "value": "${POSTGRES_USER}"
+        },
+        {
+          "name": "POSTGRES_PASSWORD",
+          "value": "${POSTGRES_PASSWORD}"
+        },
+        {
+          "name": "POSTGRES_DB",
+          "value": "${POSTGRES_DB}"
+        }
+      ]
+    }
+  ],
+  "volumes": [
+    {
+      "name": "database-data",
+      "host": {
+        "sourcePath": "/var/lib/postgresql/data"
+      }
+    }
+  ]
+}

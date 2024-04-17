@@ -1,0 +1,42 @@
+services:
+  frontend:
+    image: xxroloxx/ttt-frontend
+    container_name: tic-tac-toe_frontend_prod
+    working_dir: /app
+    ports:
+      - "80:80"
+    networks:
+      - backend
+  backend:
+    container_name: tic-tac-toe_backend_prod
+    image: xxroloxx/ttt-backend
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=database
+    working_dir: /app
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+  database:
+    image: postgres:latest
+    container_name: tic-tac-toe_db_prod
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
+volumes:
+  postgres-data-dev:
+  pgadmin-data:
+  certs:
+  vhost:
+  html:
