@@ -38,15 +38,15 @@ resource "aws_ecs_task_definition" "tic-tac-toe-backend" {
       environment = [
         {
           name  = "POSTGRES_USER"
-          value = "postgres"
+          value = var.postgres_user
         },
         {
           name  = "POSTGRES_PASSWORD"
-          value = "postgres"
+          value = var.postgres_password
         },
         {
           name  = "POSTGRES_DB"
-          value = "postgres"
+          value = var.postgres_database
         },
         {
           name  = "POSTGRES_HOST"
@@ -63,15 +63,15 @@ resource "aws_ecs_task_definition" "tic-tac-toe-backend" {
       environment = [
         {
           name  = "POSTGRES_USER"
-          value = "postgres"
+          value = var.postgres_user
         },
         {
           name  = "POSTGRES_PASSWORD"
-          value = "postgres"
+          value = var.postgres_password
         },
         {
           name  = "POSTGRES_DB"
-          value = "postgres"
+          value = var.postgres_database
         }
       ],
       mountPoints = [
@@ -92,12 +92,4 @@ resource "aws_ecs_task_definition" "tic-tac-toe-backend" {
   cpu    = 256
   memory = 1024
 }
-
-# data "aws_network_interface" "interface_tags" {
-#   filter {
-#     name   = "tag:aws:ecs:serviceName"
-#     values = [aws_ecs_service.tic-tac-toe-backend.name]
-#   }
-#   depends_on = [aws_ecs_service.tic-tac-toe-backend]
-# }
 

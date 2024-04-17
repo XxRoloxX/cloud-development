@@ -8,6 +8,9 @@ module "backend" {
   cluster_name      = aws_ecs_cluster.ecs_cluster.name
   subnet_id         = var.subnet_id
   security_group_id = var.security_group_id
+  postgres_user     = var.postgres_user
+  postgres_password = var.postgres_password
+  postgres_database = var.postgres_database
 
 }
 
