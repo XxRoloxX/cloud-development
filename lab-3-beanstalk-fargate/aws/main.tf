@@ -19,22 +19,23 @@ module "network" {
 }
 
 
-# module "beanstalk" {
-#   source            = "./modules/beanstalk/"
-#   postgres_user     = var.postgres_user
-#   postgres_password = var.postgres_password
-#   postgres_db       = var.postgres_db
-#   cname_prefix      = var.cname_prefix
-#   ssh_key           = var.ssh_key
-#   vpc_id            = module.network.vpc_id
-#   subnet_id         = module.network.subnet_id
-# }
-
-module "fargate" {
-  source            = "./modules/fargate/"
-  security_group_id = module.network.security_group_id
-  subnet_id         = module.network.subnet_id
+module "beanstalk" {
+  source            = "./modules/beanstalk/"
   postgres_user     = var.postgres_user
   postgres_password = var.postgres_password
-  postgres_database = var.postgres_db
+  postgres_db       = var.postgres_db
+  cname_prefix      = var.cname_prefix
+  ssh_key           = var.ssh_key
+  vpc_id            = module.network.vpc_id
+  subnet_id         = module.network.subnet_id
 }
+
+# module "fargate" {
+#   source            = "./modules/fargate/"
+#   security_group_id = module.network.security_group_id
+#   subnet_id         = module.network.subnet_id
+#   postgres_user     = var.postgres_user
+#   postgres_password = var.postgres_password
+#   postgres_database = var.postgres_db
+#   depends_on        = [module.beanstalk]
+# }

@@ -9,8 +9,7 @@ resource "aws_s3_bucket" "tic-tac-toe" {
 resource "aws_s3_bucket_object" "tic-tac-toe-deploymeny" {
   bucket = aws_s3_bucket.tic-tac-toe.bucket
   source = "${path.module}/docker-compose.yml"
-  #source = data.archive_file.source.output_path
-  key = "docker-compose.yml"
+  key    = "docker-compose.yml"
 }
 
 resource "aws_elastic_beanstalk_application" "tic-tac-toe" {

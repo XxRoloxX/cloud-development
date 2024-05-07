@@ -1,0 +1,207 @@
+@import "../../global/animations.scss";
+@import "../../global/variables.scss";
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  width: 100vw;
+  padding-bottom: 50px;
+  padding-top: 100px;
+
+  &__title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    margin-top: -1rem;
+    animation: fadeIn 1s ease;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__description {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  &__player-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    // margin-top: 1rem;    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    &__input {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      width: 300px;
+      border-style: none;
+      text-align: center;
+      animation: fadeIn 1s ease;
+
+      &:focus {
+        outline: none;
+        color: $primary;
+      }
+    }
+
+    &__label {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      animation: fadeIn 1s ease;
+      margin-right: 1rem;
+    }
+  }
+
+  &__components {
+    display: flex;
+    flex-direction: row;
+    height: 50vh;
+    width: 90vw;
+    max-width: 1200px;
+    margin-top: 2rem;
+    padding: 20px;
+    gap: 30px;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      flex-direction: column;
+    }
+  }
+}
+
+.game-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 25px;
+  flex-grow: 1;
+
+  &__title {
+    font-size: 3rem;
+    margin-top: 0;
+    animation: fadeIn 1s ease;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    margin-left: 10px;
+    width: 100%;
+  }
+
+  &__description {
+    font-size: 3rem;
+    color: $primary;
+    margin-right: 20px;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  &__join-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 3rem;
+    transition: all 0.3s ease;
+    margin: 10px;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  &__join-link--active {
+    @extend .game-list__join-link;
+    // background-color: $primary;
+
+    cursor: pointer;
+    color: white;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  &__join-link--inactive {
+    @extend .game-list__join-link;
+    color: grey;
+    cursor: default;
+
+    &:hover {
+      transform: none !important;
+      animation: none !important;
+    }
+  }
+
+  &__join-link--random {
+    @extend .game-list__join-link;
+    font-size: 2rem;
+    color: white;
+    animation: glow-up 2s infinite;
+
+    &:hover {
+      // transform: none !important;
+      transform: scale(1.05);
+    }
+  }
+}
+
+.game-creation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex-grow: 1;
+
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+  }
+
+  &__title {
+    font-size: 3rem;
+    margin-bottom: 50px;
+    animation: fadeIn 1s ease;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  button {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: $primary;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: darken($primary, 10%);
+    }
+  }
+}

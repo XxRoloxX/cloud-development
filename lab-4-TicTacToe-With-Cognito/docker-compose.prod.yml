@@ -1,0 +1,86 @@
+services:
+  frontend:
+    build:
+      context: ./tic-tac-toe-frontend/
+      args:
+        - VITE_API_URL=${VITE_API_URL}
+    container_name: tic-tac-toe_frontend_prod
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+      VIRTUAL_HOST: ${FRONTEND_HOST}
+      LETSENCRYPT_HOST: ${FRONTEND_HOST}
+    working_dir: /app
+    networks:
+      - backend
+  backend:
+    container_name: tic-tac-toe_backend_prod
+    build: ./tic-tac-toe-backend
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - VIRTUAL_HOST=${BACKEND_HOST}
+      - LETSENCRYPT_HOST=${BACKEND_HOST}
+      - VIRTUAL_PORT=8080
+    working_dir: /app
+    networks:
+      - backend
+  database:
+    image: postgres:latest
+    container_name: tic-tac-toe_db_prod
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+    networks:
+      - backend
+  proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: tic-tac-toe_proxy_prod
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+    networks:
+      - backend
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: tic-tac-toe_acme_prod
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - proxy
+    networks:
+      - backend
+    environment:
+      DEFAULT_EMAIL: ${DEFAULT_EMAIL}
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: tic-tac-toe_admin_prod
+    restart: always
+    ports:
+      - "127.0.0.1:9999:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_LOGIN}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
+volumes:
+  postgres-data-dev:
+  pgadmin-data:
+  certs:
+  vhost:
+  html:

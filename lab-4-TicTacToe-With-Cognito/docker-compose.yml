@@ -1,0 +1,65 @@
+services:
+  frontend:
+    image: node:21
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: ${VITE_API_URL}
+      VITE_COGNITO_USER_POOL_ID: ${COGNITO_USER_POOL_ID}
+      VITE_COGNITO_CLIENT_ID: ${FRONTEND_COGNITO_CLIENT_ID}
+      VITE_COGNITO_DOMAIN: ${COGNITO_DOMAIN}
+
+    working_dir: /app
+    volumes:
+      - "./tic-tac-toe-frontend:/app"
+    ports:
+      - 127.0.0.1:5173:5173
+    command: "npm run dev -- --host"
+  server:
+    image: node:21
+    environment:
+      - NODE_ENV=development
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
+      - COGNITO_REGION=${COGNITO_REGION}
+
+    ports:
+      - 127.0.0.1:8080:8080
+    volumes:
+      - "./tic-tac-toe-backend:/app"
+    working_dir: /app
+    command: "npm run start:dev"
+    networks:
+      - backend
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+    networks:
+      - backend
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "127.0.0.1:8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_LOGIN}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
+volumes:
+  postgres-data-dev:
+  pgadmin-data:
