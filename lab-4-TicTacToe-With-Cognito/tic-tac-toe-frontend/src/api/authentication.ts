@@ -1,11 +1,11 @@
 import { ticTacToeAxios } from "./ticTacToeApi";
 
 export const getAccessToken = () => {
-  return localStorage.getItem("access_token");
+  return localStorage.getItem("accessToken");
 };
 
 export const getRefreshToken = () => {
-  return localStorage.getItem("refresh_token");
+  return localStorage.getItem("refreshToken");
 };
 
 ticTacToeAxios.interceptors.request.use(function(config) {

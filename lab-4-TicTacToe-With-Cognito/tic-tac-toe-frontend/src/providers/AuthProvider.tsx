@@ -9,6 +9,7 @@ const isCurrentPathALoginPage = () => {
   console.log(window.location.pathname);
   return isLoginPath(window.location.pathname);
 };
+
 export interface AuthContext {
   accessToken: string | null;
   refreshToken: string | null;
@@ -30,15 +31,17 @@ export const AuthProvider = () => {
     if (isAuthenticated() && isCurrentPathALoginPage()) {
       updateTokens();
       navigate("/");
-    } else if (!isCurrentPathALoginPage()) {
+    } else if (!isCurrentPathALoginPage() && !isAuthenticated()) {
       navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
-    setAccessTokenPersistently(accessToken);
-    setRefreshTokenPersistently(refreshToken);
-    setEmailPersistently(email);
+    if (accessToken && refreshToken && email) {
+      setAccessTokenPersistently(accessToken);
+      setRefreshTokenPersistently(refreshToken);
+      setEmailPersistently(email);
+    }
   }, [accessToken, refreshToken, email]);
 
   const isAuthenticated = () => {
