@@ -3,6 +3,7 @@ import LoginResponseDto from "../dto/login-response.dto";
 import SignUpRequestDto from "../dto/signup-request.dto";
 import ConfirmSignupRequestDto from "../dto/confirm-singup-request.dto";
 import SignUpResponseDto from "../dto/signup-response.dto";
+import ResendCodeRequestDto from "../dto/resend-code-request.dto";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -15,6 +16,6 @@ abstract class IAuthService {
 
   abstract confirmSignup(confirmSignup: ConfirmSignupRequestDto): Promise<boolean>;
 
-  abstract resendCode(loginDto: SignUpRequestDto): Promise<void>;
+  abstract resendCode(resendCodeDto: ResendCodeRequestDto): Promise<void>;
 }
 export default IAuthService;

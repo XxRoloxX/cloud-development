@@ -11,6 +11,7 @@ import ConfirmSignupRequestDto from '../dto/confirm-singup-request.dto';
 import IAuthService from '../interfaces/auth.interface';
 import LoginResponseDto from '../dto/login-response.dto';
 import SignUpResponseDto from '../dto/signup-response.dto';
+import ResendCodeRequestDto from '../dto/resend-code-request.dto';
 
 class CognitoError extends Error {
   constructor(message: string) {
@@ -52,9 +53,9 @@ export class CognitoService extends IAuthService {
     }
   }
 
-  public async resendCode(signUpDto: SignUpRequestDto) {
+  public async resendCode(resendCodeDto: ResendCodeRequestDto) {
     const command: ResendConfirmationCodeCommandInput =
-      CognitoService.buildResendCodeCommand(signUpDto);
+      CognitoService.buildResendCodeCommand(resendCodeDto);
     try {
       await this.client.send(new ResendConfirmationCodeCommand(command));
     } catch (error) {
@@ -102,10 +103,10 @@ export class CognitoService extends IAuthService {
     }
   }
 
-  private static buildResendCodeCommand(signUpDto: SignUpRequestDto): ResendConfirmationCodeCommandInput {
+  private static buildResendCodeCommand(resendCodeDto: ResendCodeRequestDto): ResendConfirmationCodeCommandInput {
     return {
       ClientId: process.env.COGNITO_CLIENT_ID,
-      Username: signUpDto.email
+      Username: resendCodeDto.email
     }
   }
 

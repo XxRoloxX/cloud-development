@@ -1,15 +1,13 @@
 // import useLoginPage from "./useLoginPage";
-import { Link } from "react-router-dom";
 import "../../components/Forms/Forms.style.scss";
-import useLoginPage from "./useLoginPage";
+import useRegistrationPage from "./useRegistrationPage";
 
-const LoginPage = () => {
-  const { handleEmailChange, handlePasswordChange, handleLogin } =
-    useLoginPage();
-
+const RegistrationPage = () => {
+  const { handleEmailChange, handlePasswordChange, handleRegistration } =
+    useRegistrationPage();
   return (
     <div className={"form"}>
-      <h2 className={"form__title"}>Login</h2>
+      <h2 className={"form__title"}>Create account</h2>
       <form className={"form__panel"}>
         <label htmlFor={"emailInput"} className={"form__panel__label"}>
           Email
@@ -25,23 +23,19 @@ const LoginPage = () => {
           Password
         </label>
         <input
-          id={"passwordInput"}
-          type={"password"}
+          id={"emailInput"}
+          type={"email"}
           className={"form__panel__text-input"}
           onChange={handlePasswordChange}
         />
         <input
           type={"submit"}
-          value={"Login"}
+          value={"Sign up"}
           className={"form__panel__button"}
-          onClick={handleLogin}
+          onClick={handleRegistration}
         />
-
-        <Link className={"form__subtext"} to="/register">
-          Sign up
-        </Link>
       </form>
     </div>
   );
 };
-export default LoginPage;
+export default RegistrationPage;

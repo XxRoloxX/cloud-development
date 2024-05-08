@@ -4,6 +4,7 @@ import IAuthService from './interfaces/auth.interface';
 import LoginRequestDto from './dto/login-request.dto';
 import SignUpRequestDto from './dto/signup-request.dto';
 import ConfirmSignupRequestDto from './dto/confirm-singup-request.dto';
+import ResendCodeRequestDto from './dto/resend-code-request.dto';
 import { AuthDto } from './dto/auth-request.dto';
 import { UnauthorizedException } from '@nestjs/common';
 
@@ -35,7 +36,7 @@ export class AuthController {
   }
 
   @Post('resend-code')
-  async resendCode(@Body() loginDto: SignUpRequestDto) {
+  async resendCode(@Body() loginDto: ResendCodeRequestDto) {
     return this.authService.resendCode(loginDto);
   }
 

@@ -1,14 +1,53 @@
-const { VITE_COGNITO_CLIENT_ID, VITE_COGNITO_DOMAIN } = import.meta.env;
-
-const constuctCognitoLoginUrl = () => {
-  const loginUrl = `https://${VITE_COGNITO_DOMAIN}/login?response_type=code&client_id=${VITE_COGNITO_CLIENT_ID}&redirect_uri=${window.location.origin}/login`;
-  return loginUrl;
-};
-
-const COGNITO_URL = constuctCognitoLoginUrl();
+import { useEffect, useState } from "react";
+import { login } from "../../api/authentication";
+import useAuth from "../../providers/useAuth.ts";
+import { useNavigate } from "react-router-dom";
 
 const useLoginPage = () => {
-  return { cognitoUrl: COGNITO_URL };
+  const {
+    setAccessToken,
+    setRefreshToken,
+    setEmail: setPersistentEmail,
+    isAuthenticated,
+  } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handleLogin = async (e: React.MouseEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    try {
+      const result = await login({ email, password });
+      setAccessToken(result.accessToken);
+      setRefreshToken(result.refreshToken);
+      setPersistentEmail(email);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return {
+    email,
+    handlePasswordChange,
+    password,
+    handleEmailChange,
+    handleLogin,
+  };
 };
 
 export default useLoginPage;
