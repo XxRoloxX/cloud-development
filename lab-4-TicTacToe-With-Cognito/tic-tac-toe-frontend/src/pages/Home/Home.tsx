@@ -6,12 +6,13 @@ import useWebsockets from "../../hooks/useWebsockets";
 import JoinGameLink from "./JoinGameLink";
 import { usePlayer } from "../../hooks/playerNameContext";
 import RandomGameJoinLink from "./RandomGameJoinLink";
+import useAuth from "../../providers/useAuth";
 
 const Home = () => {
   const [games, setGames] = useState<Game[]>([]);
   const { setPlayerName } = usePlayer();
-
-  const socket = useWebsockets();
+  const { accessToken } = useAuth();
+  const socket = useWebsockets({ accessToken });
 
   const fetchGames = async () => {
     try {

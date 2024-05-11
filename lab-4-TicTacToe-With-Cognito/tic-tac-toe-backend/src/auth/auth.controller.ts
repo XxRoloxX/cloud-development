@@ -5,7 +5,7 @@ import LoginRequestDto from './dto/login-request.dto';
 import SignUpRequestDto from './dto/signup-request.dto';
 import ConfirmSignupRequestDto from './dto/confirm-singup-request.dto';
 import ResendCodeRequestDto from './dto/resend-code-request.dto';
-import { AuthDto } from './dto/auth-request.dto';
+import { AuthRequestDto } from './dto/auth-request.dto';
 import { UnauthorizedException } from '@nestjs/common';
 
 @Controller('auth')
@@ -31,7 +31,7 @@ export class AuthController {
   }
 
   @Post('verify')
-  async verify(@Body() authDto: AuthDto) {
+  async verify(@Body() authDto: AuthRequestDto) {
     return this.authService.verify(authDto.accessToken);
   }
 
@@ -48,9 +48,4 @@ export class AuthController {
       throw new UnauthorizedException(error.message)
     }
   }
-
-  // @Post('confirm')
-  // async confirm(@Body() loginDto: LoginDto) {
-  //   return this.authService.confirm(loginDto);
-  // }
 }

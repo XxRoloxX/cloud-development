@@ -21,6 +21,7 @@ class CognitoError extends Error {
 }
 
 
+
 @Injectable()
 export class CognitoService extends IAuthService {
   private readonly client: CognitoIdentityProviderClient;

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import socket from "../api/socket";
 import { Socket } from "socket.io-client";
 import { MoveDto } from "../api/types";
@@ -8,6 +8,11 @@ export class GameSocket {
 
   joinGame(gameId: number, playerTurn: string) {
     this.socket.emit(`join/${gameId}`, { gameId, playerTurn });
+  }
+  authenticate(accessToken: string) {
+    this.socket.io.opts.extraHeaders = {
+      Authorization: `Bearer ${accessToken}`,
+    };
   }
 
   listenForJoinGame(gameId: number, callback: (data: unknown) => void) {
@@ -33,8 +38,8 @@ export class GameSocket {
   makeMove(move: MoveDto) {
     this.socket.emit(`move`, move);
   }
-
-  connect() {
+  connect(accessToken: string) {
+    this.authenticate(accessToken);
     this.socket.connect();
   }
   disconnect() {
@@ -42,14 +47,25 @@ export class GameSocket {
   }
 }
 
-const useWebsockets = () => {
+interface WebsocketProps {
+  accessToken: string | null;
+}
+
+const useWebsockets = ({ accessToken }: WebsocketProps) => {
+  const [gameSocket] = useState<GameSocket>(new GameSocket(socket));
+
   useEffect(() => {
-    socket.connect();
+    if (accessToken) {
+      console.log("connecting to websocket");
+      console.log(accessToken);
+      gameSocket.connect(accessToken);
+    }
 
     return () => {
-      socket.disconnect();
+      gameSocket.disconnect();
     };
-  }, []);
-  return new GameSocket(socket);
+  }, [accessToken, gameSocket]);
+
+  return gameSocket;
 };
 export default useWebsockets;

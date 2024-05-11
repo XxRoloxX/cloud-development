@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MovesModule } from './game/moves/moves.module';
 import { PostgresProviderModule } from './database/postgres/provider.module';
 import { AuthModule } from './auth/auth.module';
+// import { WsGuard } from './auth/guards/ws.guard';
+// import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -13,9 +15,9 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       envFilePath: __dirname + '../../.env',
     }),
-    GameModule,
     MovesModule,
     AuthModule,
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],

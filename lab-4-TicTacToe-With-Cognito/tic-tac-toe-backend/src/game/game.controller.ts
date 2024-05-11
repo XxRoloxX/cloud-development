@@ -8,7 +8,10 @@ import { HttpException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { Body } from '@nestjs/common';
 import { EventsGateway } from './game.socket';
+import { UseGuards } from '@nestjs/common';
+import { WsGuard } from '../auth/guards/ws.guard';
 
+@UseGuards(WsGuard)
 @Controller('game')
 export class GameController {
   constructor(private readonly gameService: GameService, private readonly eventsGateway: EventsGateway) { }
