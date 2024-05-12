@@ -7,6 +7,7 @@ import ConfirmSignupRequestDto from './dto/confirm-singup-request.dto';
 import ResendCodeRequestDto from './dto/resend-code-request.dto';
 import { AuthRequestDto } from './dto/auth-request.dto';
 import { UnauthorizedException } from '@nestjs/common';
+import { RefreshTokenRequestDto } from './dto/refresh-token-requset.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -32,13 +33,31 @@ export class AuthController {
 
   @Post('verify')
   async verify(@Body() authDto: AuthRequestDto) {
-    return this.authService.verify(authDto.accessToken);
+    try {
+      return this.authService.verify(authDto.accessToken);
+    } catch (error) {
+      throw new UnauthorizedException(error.message)
+    }
   }
 
   @Post('resend-code')
   async resendCode(@Body() loginDto: ResendCodeRequestDto) {
-    return this.authService.resendCode(loginDto);
+    try {
+      return this.authService.resendCode(loginDto);
+    } catch (error) {
+      throw new UnauthorizedException(error.message)
+    }
   }
+
+  @Post('refresh-token')
+  async refreshToken(@Body() refreshToken: RefreshTokenRequestDto) {
+    try {
+      return await this.authService.refreshToken(refreshToken);
+    } catch (error) {
+      throw new UnauthorizedException(error.message)
+    }
+  }
+
 
   @Post('confirm-signup')
   async confirmSignup(@Body() confirmSignup: ConfirmSignupRequestDto) {

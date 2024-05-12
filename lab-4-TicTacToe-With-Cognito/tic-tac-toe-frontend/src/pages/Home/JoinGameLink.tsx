@@ -38,4 +38,3 @@ const JoinGameLink = ({
 };
 
 export default JoinGameLink;
-

@@ -1,4 +1,3 @@
-// import useLoginPage from "./useLoginPage";
 import "../../components/Forms/Forms.style.scss";
 import useRegistrationPage from "./useRegistrationPage";
 
@@ -23,8 +22,8 @@ const RegistrationPage = () => {
           Password
         </label>
         <input
-          id={"emailInput"}
-          type={"email"}
+          id={"passwordInput"}
+          type={"password"}
           className={"form__panel__text-input"}
           onChange={handlePasswordChange}
         />

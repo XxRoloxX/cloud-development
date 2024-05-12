@@ -1,13 +1,20 @@
-import { useEffect, useState } from "react";
-import socket from "../api/socket";
+// import { useEffect, useState } from "react";
+// import socket from "../api/socket";
 import { Socket } from "socket.io-client";
-import { MoveDto } from "../api/types";
+import { MoveDto, PlayerTurn } from "../api/types";
+
+interface JoinGameDto {
+  gameId: string;
+  playerId: string;
+  playerTurn: PlayerTurn;
+}
 
 export class GameSocket {
   constructor(private readonly socket: Socket) { }
 
-  joinGame(gameId: number, playerTurn: string) {
-    this.socket.emit(`join/${gameId}`, { gameId, playerTurn });
+  joinGame(joinGameDto: JoinGameDto) {
+    console.log("Calling join");
+    this.socket.emit(`join`, joinGameDto);
   }
   authenticate(accessToken: string) {
     this.socket.io.opts.extraHeaders = {
@@ -15,31 +22,32 @@ export class GameSocket {
     };
   }
 
-  listenForJoinGame(gameId: number, callback: (data: unknown) => void) {
-    this.socket.on(`join/${gameId}`, callback);
+  listenForJoinGame(callback: (data: JoinGameDto) => void) {
+    this.socket.on(`announce-join`, callback);
   }
 
   listenForNewGame(callback: (data: unknown) => void) {
-    this.socket.on("new-game", callback);
+    this.socket.on("announce-new-game", callback);
   }
   unListenForNewGame() {
-    this.socket.off("new-game");
+    this.socket.off("announce-new-game");
   }
 
-  listenForMove(gameId: number, callback: (data: unknown) => void) {
-    this.socket.on(`move/${gameId}`, callback);
+  listenForMove(callback: (data: MoveDto) => void) {
+    this.socket.on(`move`, callback);
   }
-  unListenForMove(gameId: number) {
-    this.socket.off(`move/${gameId}`);
+  unListenForMove() {
+    this.socket.off(`move`);
   }
-  unListenForJoinGame(gameId: number) {
-    this.socket.off(`join/${gameId}`);
+  unListenForJoinGame() {
+    this.socket.off(`join`);
   }
   makeMove(move: MoveDto) {
     this.socket.emit(`move`, move);
   }
   connect(accessToken: string) {
     this.authenticate(accessToken);
+    // this.socket.open();
     this.socket.connect();
   }
   disconnect() {
@@ -47,25 +55,24 @@ export class GameSocket {
   }
 }
 
-interface WebsocketProps {
-  accessToken: string | null;
-}
+// interface WebsocketProps {
+//   accessToken: string | null;
+// }
 
-const useWebsockets = ({ accessToken }: WebsocketProps) => {
-  const [gameSocket] = useState<GameSocket>(new GameSocket(socket));
-
-  useEffect(() => {
-    if (accessToken) {
-      console.log("connecting to websocket");
-      console.log(accessToken);
-      gameSocket.connect(accessToken);
-    }
-
-    return () => {
-      gameSocket.disconnect();
-    };
-  }, [accessToken, gameSocket]);
-
-  return gameSocket;
-};
-export default useWebsockets;
+// const useWebsockets = ({ accessToken }: WebsocketProps) => {
+//   const [gameSocket] = useState<GameSocket>(new GameSocket(socket));
+//
+//   useEffect(() => {
+//     console.log("Connecting to socket");
+//     console.log(accessToken);
+//     gameSocket.connect(accessToken!);
+//
+//     // return () => {
+//     //   console.log("Disconnecting from socket");
+//     //   gameSocket.disconnect();
+//     // };
+//   }, [accessToken, gameSocket]);
+//
+//   return gameSocket;
+// };
+// export default useWebsockets;

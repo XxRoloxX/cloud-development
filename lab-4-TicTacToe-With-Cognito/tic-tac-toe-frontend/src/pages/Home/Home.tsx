@@ -2,17 +2,14 @@ import "./Home.style.scss";
 import { createGame, getAllGames } from "../../api/ticTacToeApi";
 import { useEffect, useState } from "react";
 import { Game, PlayerTurn } from "../../api/types";
-import useWebsockets from "../../hooks/useWebsockets";
 import JoinGameLink from "./JoinGameLink";
-import { usePlayer } from "../../hooks/playerNameContext";
 import RandomGameJoinLink from "./RandomGameJoinLink";
-import useAuth from "../../providers/useAuth";
+// import useAuth from "../../providers/useAuth";
+import useWebsockets from "../../providers/useWebsockets";
 
 const Home = () => {
   const [games, setGames] = useState<Game[]>([]);
-  const { setPlayerName } = usePlayer();
-  const { accessToken } = useAuth();
-  const socket = useWebsockets({ accessToken });
+  const { gameSocket } = useWebsockets();
 
   const fetchGames = async () => {
     try {
@@ -23,35 +20,27 @@ const Home = () => {
     }
   };
 
-  const handlePlayerNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setPlayerName(event.target.value);
-  };
-
   useEffect(() => {
     const handleNewGame = () => {
-      socket.listenForNewGame(() => {
+      gameSocket.listenForNewGame(() => {
+        fetchGames();
+      });
+      gameSocket.listenForJoinGame(() => {
+        console.log("Got the join game event");
         fetchGames();
       });
     };
     handleNewGame();
     fetchGames();
     return () => {
-      socket.unListenForNewGame();
+      gameSocket.unListenForNewGame();
     };
-  }, []);
+  }, [gameSocket]);
 
   return (
     <div className="home-page">
       <h1 className="home-page__title">Welcome to Tic Tac Toe</h1>
-      <div className="home-page__player-name">
-        <label className="home-page__player-name__label">Enter your name</label>
-        <input
-          className="home-page__player-name__input"
-          onChange={handlePlayerNameChange}
-        />
-      </div>
+      <div className="home-page__player-name"></div>
 
       <RandomGameJoinLink games={games} />
       <div className="home-page__components">

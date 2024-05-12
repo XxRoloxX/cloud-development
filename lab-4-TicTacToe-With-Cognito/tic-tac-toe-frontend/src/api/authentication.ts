@@ -1,4 +1,5 @@
 import { ticTacToeAxios } from "./ticTacToeApi";
+import { InternalAxiosRequestConfig } from "axios";
 
 export const getAccessToken = () => {
   return localStorage.getItem("accessToken");
@@ -7,14 +8,48 @@ export const getAccessToken = () => {
 export const getRefreshToken = () => {
   return localStorage.getItem("refreshToken");
 };
+export const getExpiresAt = () => {
+  return localStorage.getItem("expiresAt");
+};
+export const setAccessTokenPersistently = (accessToken: string | null) => {
+  localStorage.setItem("accessToken", accessToken || "");
+};
+export const setRefreshTokenPersistently = (refreshToken: string | null) => {
+  localStorage.setItem("refreshToken", refreshToken || "");
+};
+export const setExpiresAtPersistently = (expiresAt: string | null) => {
+  localStorage.setItem("expiresAt", expiresAt || "");
+};
 
-ticTacToeAxios.interceptors.request.use(function(config) {
+ticTacToeAxios.interceptors.request.use(async function(config) {
+  handleTokenRefresh(config);
+  handleAuthentication(config);
+  return config;
+});
+
+const handleAuthentication = (config: InternalAxiosRequestConfig<unknown>) => {
   const token = getAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  return config;
-});
+};
+
+const handleTokenRefresh = async (
+  config: InternalAxiosRequestConfig<unknown>,
+) => {
+  const expiresAt = getExpiresAt();
+  if (
+    config.url != "/auth/refresh-token" &&
+    expiresAt &&
+    Number(expiresAt) < Date.now()
+  ) {
+    const newToken = await refreshToken({ refreshToken: getRefreshToken()! });
+    if (newToken) {
+      setAccessTokenPersistently(newToken.accessToken);
+      setExpiresAtPersistently(newToken.expiresAt.toString());
+    }
+  }
+};
 
 interface LoginRequestDto {
   email: string;
@@ -29,6 +64,7 @@ interface SignupRequestDto {
 interface LoginResponseDto {
   accessToken: string;
   refreshToken: string;
+  expiresAt: number;
 }
 
 interface SignupResponseDto {
@@ -42,6 +78,13 @@ interface ConfirmSignupRequestDto {
 }
 interface ResendCodeRequestDto {
   email: string;
+}
+interface RefreshTokenRequestDto {
+  refreshToken: string;
+}
+interface RefreshTokenResponseDto {
+  accessToken: string;
+  expiresAt: number;
 }
 
 export const login = async (
@@ -78,6 +121,15 @@ export const confirmSignup = async (
 export const resendCode = async (resendCodeDto: ResendCodeRequestDto) => {
   try {
     return (await ticTacToeAxios.post("/auth/resend-code", resendCodeDto)).data;
+  } catch (error) {
+    return Promise.reject(new Error((error as Error).message));
+  }
+};
+
+export const refreshToken = async (refreshToken: RefreshTokenRequestDto) => {
+  try {
+    return (await ticTacToeAxios.post("/auth/refresh-token", refreshToken))
+      .data as RefreshTokenResponseDto;
   } catch (error) {
     return Promise.reject(new Error((error as Error).message));
   }

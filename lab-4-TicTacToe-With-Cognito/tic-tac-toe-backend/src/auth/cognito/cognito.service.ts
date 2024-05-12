@@ -12,6 +12,8 @@ import IAuthService from '../interfaces/auth.interface';
 import LoginResponseDto from '../dto/login-response.dto';
 import SignUpResponseDto from '../dto/signup-response.dto';
 import ResendCodeRequestDto from '../dto/resend-code-request.dto';
+import { RefreshTokenRequestDto } from '../dto/refresh-token-requset.dto';
+import { RefreshTokenResponseDto } from '../dto/refresh-token-response.dto';
 
 class CognitoError extends Error {
   constructor(message: string) {
@@ -19,8 +21,6 @@ class CognitoError extends Error {
     this.name = 'CognitoError';
   }
 }
-
-
 
 @Injectable()
 export class CognitoService extends IAuthService {
@@ -38,9 +38,14 @@ export class CognitoService extends IAuthService {
       return new LoginResponseDto()
         .setAccessToken(loginResponse.AuthenticationResult.AccessToken)
         .setRefreshToken(loginResponse.AuthenticationResult.RefreshToken)
+        .setExpiresAt(this.getTimeOfExpiration(loginResponse.AuthenticationResult.ExpiresIn))
     } catch (error) {
       throw new CognitoError(error.message);
     }
+  }
+
+  private getTimeOfExpiration(expiresIn: number) {
+    return expiresIn * 1000 + Date.now();
   }
 
   public async confirmSignup(confirmSignupDto: ConfirmSignupRequestDto) {
@@ -67,7 +72,8 @@ export class CognitoService extends IAuthService {
     const command: GetUserCommandInput = {
       AccessToken: accessToken
     }
-    return this.client.send(new GetUserCommand(command));
+    const profile = await this.client.send(new GetUserCommand(command));
+    return { Username: profile.UserAttributes.find(attr => attr.Name === 'email')?.Value }
   }
   public async signup(signUpDto: SignUpRequestDto) {
     const command = CognitoService.buildSignupCommand(signUpDto);
@@ -79,6 +85,29 @@ export class CognitoService extends IAuthService {
         .setEmail(signUpDto.email);
     } catch (error) {
       throw new CognitoError(error.message);
+    }
+  }
+
+  public async refreshToken(refreshTokenRequestDto: RefreshTokenRequestDto): Promise<RefreshTokenResponseDto> {
+    const command = this.buildRefreshTokenCommand(refreshTokenRequestDto.refreshToken);
+    try {
+      const loginResponse = await this.client.send(new InitiateAuthCommand(command));
+      return new RefreshTokenResponseDto()
+        .setAccessToken(loginResponse.AuthenticationResult.AccessToken)
+        .setExpiresAt(this.getTimeOfExpiration(loginResponse.AuthenticationResult.ExpiresIn));
+    } catch (error) {
+      throw new CognitoError(error.message);
+    }
+  }
+
+  private buildRefreshTokenCommand(refreshToken: string): InitiateAuthCommandInput {
+    return {
+      AuthFlow: 'REFRESH_TOKEN_AUTH',
+      ClientId: process.env.COGNITO_CLIENT_ID,
+      AuthParameters: {
+        'REFRESH_TOKEN': refreshToken
+      }
+
     }
   }
 

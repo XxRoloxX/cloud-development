@@ -3,15 +3,11 @@ import { GameService } from './game.service';
 import { CreateGameDTO } from './dto/createGame.dto';
 import { GameDto } from './dto/game.dto';
 import { Param } from '@nestjs/common';
-import { Patch } from '@nestjs/common';
-import { HttpException } from '@nestjs/common';
-import { HttpStatus } from '@nestjs/common';
-import { Body } from '@nestjs/common';
 import { EventsGateway } from './game.socket';
 import { UseGuards } from '@nestjs/common';
-import { WsGuard } from '../auth/guards/ws.guard';
+import { HttpGuard } from 'src/auth/guards/http.guard';
 
-@UseGuards(WsGuard)
+@UseGuards(HttpGuard)
 @Controller('game')
 export class GameController {
   constructor(private readonly gameService: GameService, private readonly eventsGateway: EventsGateway) { }
@@ -30,20 +26,6 @@ export class GameController {
 
   @Get(':id')
   findOne(@Param() params: any): Promise<GameDto> {
-    // this.gameService.findOne(params.id).then((game) => {
-    // })
     return this.gameService.findOne(params.id);
-  }
-
-  @Patch(':id/join')
-  async joinGame(@Param() params: any, @Body() body): Promise<GameDto> {
-    try {
-      const result = await this.gameService.joinGame(body.id, body.playerTurn, body.playerName);
-      this.eventsGateway.announceJoinGame(result);
-      this.eventsGateway.announceNewGame(result);
-      return result;
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
-    }
   }
 }

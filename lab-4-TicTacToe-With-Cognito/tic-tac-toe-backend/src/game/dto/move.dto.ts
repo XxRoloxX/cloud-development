@@ -4,10 +4,10 @@ import { PlayerTurn } from 'src/common/game';
 
 export class MoveDto {
 
-  gameId: number;
+  gameId: string;
+  playerId: string;
   @IsEnum(PlayerTurn)
   playerTurn: PlayerTurn;
-
   // @IsInt()
   // @Min(0)
   // @Max(2)

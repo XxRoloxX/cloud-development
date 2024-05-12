@@ -11,10 +11,12 @@ import { CognitoService } from 'src/auth/cognito/cognito.service';
 
 @Module({
   controllers: [GameController],
-  providers: [EventsGateway, GameService, {
-    provide: IAuthService,
-    useClass: CognitoService
-  }],
+  providers: [EventsGateway, GameService,
+    {
+      provide: IAuthService,
+      useClass: CognitoService
+    }
+  ],
   imports: [MovesModule, TypeOrmModule.forFeature([GameEntity, MoveEntity])],
 })
 export class GameModule { }

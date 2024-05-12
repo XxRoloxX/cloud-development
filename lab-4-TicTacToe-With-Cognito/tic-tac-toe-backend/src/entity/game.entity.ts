@@ -5,7 +5,7 @@ import { MoveEntity } from './move.entity';
 @Entity('game')
 export class GameEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column({
     type: "enum",

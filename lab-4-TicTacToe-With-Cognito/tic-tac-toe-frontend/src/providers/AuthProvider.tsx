@@ -6,7 +6,6 @@ const loginPaths = ["/login", "/register", "/confirm"];
 const isLoginPath = (path: string) => loginPaths.includes(path);
 
 const isCurrentPathALoginPage = () => {
-  console.log(window.location.pathname);
   return isLoginPath(window.location.pathname);
 };
 
@@ -14,9 +13,11 @@ export interface AuthContext {
   accessToken: string | null;
   refreshToken: string | null;
   email: string | null;
+  expiresAt: number | null;
   setAccessToken: (accessToken: string) => void;
   setRefreshToken: (refreshToken: string) => void;
   setEmail: (email: string) => void;
+  setExpiresAt: (expiresAt: number) => void;
   isAuthenticated: () => boolean;
   logout: () => void;
 }
@@ -25,6 +26,7 @@ export const AuthProvider = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+  const [expiresAt, setExpiresAt] = useState<number | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,16 +35,19 @@ export const AuthProvider = () => {
       navigate("/");
     } else if (!isCurrentPathALoginPage() && !isAuthenticated()) {
       navigate("/login");
+    } else if (isAuthenticated()) {
+      updateTokens();
     }
-  }, [navigate]);
+  }, [navigate, email]);
 
   useEffect(() => {
     if (accessToken && refreshToken && email) {
       setAccessTokenPersistently(accessToken);
       setRefreshTokenPersistently(refreshToken);
       setEmailPersistently(email);
+      setExpiresAtPersistently(expiresAt);
     }
-  }, [accessToken, refreshToken, email]);
+  }, [accessToken, refreshToken, email, expiresAt]);
 
   const isAuthenticated = () => {
     const accessToken = getAccessToken();
@@ -58,6 +63,7 @@ export const AuthProvider = () => {
     setAccessToken(accessToken);
     setRefreshToken(refreshToken);
     setEmail(email);
+    setExpiresAt(Number(getExpiresAt()));
   };
 
   const logout = () => {
@@ -67,6 +73,7 @@ export const AuthProvider = () => {
     setAccessTokenPersistently(null);
     setRefreshTokenPersistently(null);
     setEmailPersistently(null);
+    setExpiresAtPersistently(null);
     navigate("/login");
   };
 
@@ -79,6 +86,8 @@ export const AuthProvider = () => {
         isAuthenticated,
         accessToken,
         refreshToken,
+        expiresAt,
+        setExpiresAt,
         email,
         ...usePlayer(),
         logout,
@@ -105,4 +114,12 @@ const getRefreshToken = () => {
 };
 const getEmail = () => {
   return localStorage.getItem("email");
+};
+
+const setExpiresAtPersistently = (expiresAt: number | null) => {
+  localStorage.setItem("expiresAt", expiresAt?.toString() || "");
+};
+
+const getExpiresAt = () => {
+  return localStorage.getItem("expiresAt");
 };

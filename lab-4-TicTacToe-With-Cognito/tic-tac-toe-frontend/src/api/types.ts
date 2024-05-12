@@ -24,6 +24,7 @@ export interface Move {
 export interface MoveDto {
   gameId: number;
   playerTurn: PlayerTurn;
+  playerId: string;
   positionX: number;
   positionY: number;
 }

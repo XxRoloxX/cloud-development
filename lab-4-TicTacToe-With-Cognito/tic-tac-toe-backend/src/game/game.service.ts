@@ -6,6 +6,7 @@ import { GameStatus, PlayerTurn } from 'src/common/game';
 import { getRandomName } from 'src/common/randomUtils';
 import { MoveDto } from './dto/move.dto';
 import { MoveEntity } from 'src/entity/move.entity';
+import { JoinGameDto } from './dto/join-game.dto';
 
 @Injectable()
 export class GameService {
@@ -21,7 +22,7 @@ export class GameService {
   findAllPending(): Promise<GameEntity[]> {
     return this.gameRepository.find({ where: { status: GameStatus.PENDING }, relations: ["moves"] });
   }
-  findOne(id: number): Promise<GameEntity> {
+  findOne(id: string): Promise<GameEntity> {
     return this.gameRepository.findOne({ where: { id }, relations: ["moves"] });
   }
 
@@ -80,7 +81,6 @@ export class GameService {
 
 
   private updateGameStatus(game: GameEntity) {
-    console.log("Update game status", game)
     switch (game.status) {
       case GameStatus.PENDING:
         if (game.player1_id && game.player2_id) {
@@ -89,7 +89,6 @@ export class GameService {
         break;
       case GameStatus.IN_PROGRESS:
         const winner = this.isGameWonByPlayer(game);
-        console.log("Check winner", winner)
         if (winner) {
           game.status = winner === PlayerTurn.Player1 ? GameStatus.PLAYER1_WON : GameStatus.PLAYER2_WON;
         } else if (game.moves.length === 9) {
@@ -128,15 +127,18 @@ export class GameService {
 
     return game;
   }
-  async joinGame(id: number, playerTurn: PlayerTurn, playerName?: string): Promise<GameEntity> {
-    const game = await this.gameRepository.findOneBy({ id });
+  async joinGame(joinGameDto: JoinGameDto): Promise<GameEntity> {
+    const game = await this.gameRepository.findOneBy({ id: joinGameDto.gameId });
     if (!game) {
-      throw new Error(`Game ${id} not found`);
+      throw new Error(`Game ${joinGameDto.gameId} not found`);
     }
     if (game.status !== GameStatus.PENDING) {
-      throw new Error(`Game ${id} is not pending`);
+      throw new Error(`Game ${joinGameDto.gameId} is not pending`);
     }
-    const result = await this.gameRepository.save(this.addPlayerToGame(game, playerTurn, playerName));
+
+
+    const modifiedGame = this.addPlayerToGame(game, joinGameDto.playerTurn, joinGameDto.playerId)
+    const result = await this.gameRepository.save(modifiedGame);
     return result;
 
   }
@@ -157,6 +159,16 @@ export class GameService {
     return game;
   }
 
+  getPlayersTurn(game: GameEntity, playerId: string): PlayerTurn {
+    if (game.player1_id === playerId) {
+      return PlayerTurn.Player1;
+    } else if (game.player2_id === playerId) {
+      return PlayerTurn.Player2;
+    } else {
+      throw new Error(`Player ${playerId} is not in game ${game.id}`);
+    }
+  }
+
   async makeMove(moveDto: MoveDto) {
     const game = await this.gameRepository.findOne({ where: { id: moveDto.gameId }, relations: ["moves"] });
     if (!game) {
@@ -171,9 +183,10 @@ export class GameService {
     if (game.currentTurn !== moveDto.playerTurn) {
       throw new Error(`It's not player ${moveDto.playerTurn} turn`);
     }
+    if (this.getPlayersTurn(game, moveDto.playerId) !== moveDto.playerTurn) {
+      throw new Error(`Player ${moveDto.playerId} is not player ${moveDto.playerTurn}`);
+    }
 
-    console.log(moveDto)
-    console.log(game.moves)
     if (!game.moves) {
       game.moves = [];
     }
@@ -183,6 +196,7 @@ export class GameService {
     move.playerTurn = moveDto.playerTurn;
     move.positionX = moveDto.positionX;
     move.positionY = moveDto.positionY;
+
     moves.push(move);
     game.moves = moves;
     this.updateGameStatus(game);
@@ -195,7 +209,6 @@ export class GameService {
   async createGame(): Promise<GameEntity> {
     const gameEntity = new GameEntity();
     const result = await this.gameRepository.save(gameEntity);
-    // this.gameSocket.announceNewGame(result);
     return result;
   }
 }

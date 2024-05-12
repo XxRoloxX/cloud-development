@@ -1,7 +1,8 @@
 import { IsInt, IsNotEmpty } from 'class-validator';
+import { PlayerTurn } from 'src/common/game';
 export class JoinGameDto {
-  @IsInt()
-  gameId: number;
+  gameId: string;
   @IsNotEmpty()
   playerId: string;
+  playerTurn: PlayerTurn;
 }

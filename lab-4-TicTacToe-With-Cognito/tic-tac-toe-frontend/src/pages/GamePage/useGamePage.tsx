@@ -1,10 +1,9 @@
-import useWebsockets from "../../hooks/useWebsockets";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Game, PlayerTurn, MoveDto, GameStatus } from "../../api/types";
-import { getGame, joinGame } from "../../api/ticTacToeApi";
-import { usePlayer } from "../../hooks/playerNameContext";
+import { getGame } from "../../api/ticTacToeApi";
 import useAuth from "../../providers/useAuth";
+import useWebsockets from "../../providers/useWebsockets";
 
 const useGamePage = () => {
   const { id: game_id, playerTurn } = useParams<{
@@ -14,22 +13,20 @@ const useGamePage = () => {
 
   const [game, setGame] = useState<Game | null>(null);
   const [isPending, setIsPending] = useState(true);
-  const { playerName } = usePlayer();
-  const { accessToken } = useAuth();
-  const socket = useWebsockets({ accessToken });
+  const { email } = useAuth();
+  const { gameSocket } = useWebsockets();
 
   useEffect(() => {
-    // fetchGame();
-    socket.listenForMove(Number(game_id), () => {
+    console.log("Listening for move");
+    gameSocket.listenForMove(() => {
       fetchGame();
     });
-  }, []);
+  });
 
   useEffect(() => {
     checkGameStatus();
-    setTimeout(fetchGame, 100);
-    return () => socket.unListenForJoinGame(Number(game_id));
-  }, []);
+    return () => gameSocket.unListenForJoinGame();
+  }, [email, gameSocket]);
 
   const fetchGame = useCallback(async () => {
     if (typeof game_id !== "string") return null;
@@ -50,21 +47,22 @@ const useGamePage = () => {
   }, [fetchGame]);
 
   const checkGameStatus = useCallback(async () => {
-    const game = await joinGame(
-      Number(game_id),
-      playerTurn as PlayerTurn,
-      playerName,
-    );
-    if (game.status === GameStatus.IN_PROGRESS) {
+    if (game?.status === GameStatus.IN_PROGRESS) {
       setIsPending(false);
     }
 
-    socket.listenForJoinGame(Number(game_id), () => {
+    gameSocket.listenForJoinGame(() => {
       handleJoinGame();
     });
 
-    socket.joinGame(Number(game_id), playerTurn as PlayerTurn);
-  }, [game_id, playerTurn, socket, handleJoinGame]);
+    if (email && game_id && playerTurn) {
+      gameSocket.joinGame({
+        gameId: game_id!,
+        playerId: email!,
+        playerTurn: playerTurn!,
+      });
+    }
+  }, [game?.status, gameSocket, email, game_id, playerTurn, handleJoinGame]);
 
   const handleMakingMove = (position: number) => {
     if (!playerTurn || !game_id) return;
@@ -73,9 +71,10 @@ const useGamePage = () => {
       positionX: position % 3,
       positionY: Math.floor(position / 3),
       gameId: game_id as unknown as number,
+      playerId: email!,
     };
 
-    socket.makeMove(move);
+    gameSocket.makeMove(move);
   };
 
   return { game, isPending, handleMakingMove, playerTurn };

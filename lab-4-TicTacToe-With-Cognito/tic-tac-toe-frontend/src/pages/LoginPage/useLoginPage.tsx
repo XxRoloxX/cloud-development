@@ -8,6 +8,7 @@ const useLoginPage = () => {
     setAccessToken,
     setRefreshToken,
     setEmail: setPersistentEmail,
+    setExpiresAt,
     isAuthenticated,
   } = useAuth();
   const [email, setEmail] = useState("");
@@ -34,6 +35,7 @@ const useLoginPage = () => {
       const result = await login({ email, password });
       setAccessToken(result.accessToken);
       setRefreshToken(result.refreshToken);
+      setExpiresAt(result.expiresAt);
       setPersistentEmail(email);
       navigate("/");
     } catch (error) {
