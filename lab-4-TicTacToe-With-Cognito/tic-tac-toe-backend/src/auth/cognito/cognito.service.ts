@@ -73,7 +73,12 @@ export class CognitoService extends IAuthService {
       AccessToken: accessToken
     }
     const profile = await this.client.send(new GetUserCommand(command));
-    return { Username: profile.UserAttributes.find(attr => attr.Name === 'email')?.Value }
+    // console.log(profile);
+    return {
+      email: profile.UserAttributes.find(attr => attr.Name === 'email')?.Value,
+      name: profile.UserAttributes.find(attr => attr.Name === 'name')?.Value
+    }
+    // Username: profile.Use}
   }
   public async signup(signUpDto: SignUpRequestDto) {
     const command = CognitoService.buildSignupCommand(signUpDto);
@@ -82,7 +87,8 @@ export class CognitoService extends IAuthService {
       await this.resendCode(signUpDto);
       return new SignUpResponseDto()
         .setUserId(result.UserSub)
-        .setEmail(signUpDto.email);
+        .setEmail(signUpDto.email)
+        .setName(signUpDto.name)
     } catch (error) {
       throw new CognitoError(error.message);
     }
@@ -128,6 +134,10 @@ export class CognitoService extends IAuthService {
         {
           Name: 'email',
           Value: signUpDto.email
+        },
+        {
+          Name: 'name',
+          Value: signUpDto.name
         }
       ]
     }

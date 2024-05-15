@@ -22,8 +22,8 @@ export const setExpiresAtPersistently = (expiresAt: string | null) => {
 };
 
 ticTacToeAxios.interceptors.request.use(async function(config) {
-  handleTokenRefresh(config);
   handleAuthentication(config);
+  handleTokenRefresh(config);
   return config;
 });
 
@@ -59,6 +59,7 @@ interface LoginRequestDto {
 interface SignupRequestDto {
   email: string;
   password: string;
+  name: string;
 }
 
 interface LoginResponseDto {
@@ -87,6 +88,21 @@ interface RefreshTokenResponseDto {
   expiresAt: number;
 }
 
+interface VerifyUserRequestDto {
+  accessToken: string;
+}
+
+export const getProfileInfo = async (
+  verifyUserRequestDto: VerifyUserRequestDto,
+) => {
+  try {
+    return (await ticTacToeAxios.post("/auth/verify", verifyUserRequestDto))
+      .data;
+  } catch (error) {
+    return Promise.reject(new Error((error as Error).message));
+  }
+};
+
 export const login = async (
   loginDto: LoginRequestDto,
 ): Promise<LoginResponseDto> => {
@@ -98,9 +114,9 @@ export const login = async (
   }
 };
 
-export const signup = async (loginDto: SignupRequestDto) => {
+export const signup = async (signupDto: SignupRequestDto) => {
   try {
-    return (await ticTacToeAxios.post("/auth/signup", loginDto))
+    return (await ticTacToeAxios.post("/auth/signup", signupDto))
       .data as SignupResponseDto;
   } catch (error) {
     return Promise.reject(new Error((error as Error).message));

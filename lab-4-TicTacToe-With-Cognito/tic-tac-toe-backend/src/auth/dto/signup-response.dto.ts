@@ -1,6 +1,7 @@
 export default class SignUpResponseDto {
   userId: string;
   email: string;
+  name: string;
 
   setUserId(userId: string) {
     this.userId = userId;
@@ -9,6 +10,10 @@ export default class SignUpResponseDto {
 
   setEmail(email: string) {
     this.email = email;
+    return this;
+  }
+  setName(name: string) {
+    this.name = name;
     return this;
   }
 }

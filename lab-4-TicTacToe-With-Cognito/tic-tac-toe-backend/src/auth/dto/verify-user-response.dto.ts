@@ -1,3 +1,4 @@
 export interface VerifyUserResponseDto {
-  Username: string;
+  name: string;
+  email: string;
 }

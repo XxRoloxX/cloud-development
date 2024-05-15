@@ -1,4 +1,4 @@
-import { IsEmail } from "class-validator";
+import { IsEmail, IsNotEmpty } from "class-validator";
 import { IsStrongPassword } from "class-validator";
 
 export default class SignUpRequestDto {
@@ -6,4 +6,6 @@ export default class SignUpRequestDto {
   email: string
   @IsStrongPassword()
   password: string
+  @IsNotEmpty()
+  name: string
 }

@@ -7,6 +7,9 @@ export class HttpGuard implements CanActivate {
   constructor(@Inject(IAuthService) private readonly authService: IAuthService) { }
 
   private getAccessTokenFromAuthorizationHeader(authorizationHeader: string): string {
+    if (!authorizationHeader) {
+      throw new UnauthorizedException('No token provided');
+    }
     const [type, token] = authorizationHeader.split(' ');
     if (type !== 'Bearer') {
       throw new UnauthorizedException('Invalid token type');
@@ -17,6 +20,8 @@ export class HttpGuard implements CanActivate {
 
   private getAuthorizationHeader(context: ExecutionContext): string {
     const client = context.switchToHttp().getRequest();
+    // console.log(client.url)
+    // console.log(client.headers.authorization)
     return this.getAccessTokenFromAuthorizationHeader(client.headers.authorization);
   }
 

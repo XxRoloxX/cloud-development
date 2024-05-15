@@ -41,14 +41,12 @@ export class EventsGateway {
         return
       }
 
-      const { Username } = await this.authService.verify(
+      const { name, email } = await this.authService.verify(
         WsGuard.getAccessTokenFromAuthorizationHeader(client.handshake.headers.authorization)
       );
 
-      console.log(Username)
-      console.log(move.playerId)
 
-      if (move.playerId !== Username) {
+      if (move.playerId !== email) {
         console.error('Invalid player')
         return
       }

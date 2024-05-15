@@ -2,8 +2,12 @@ import "../../components/Forms/Forms.style.scss";
 import useRegistrationPage from "./useRegistrationPage";
 
 const RegistrationPage = () => {
-  const { handleEmailChange, handlePasswordChange, handleRegistration } =
-    useRegistrationPage();
+  const {
+    handleEmailChange,
+    handlePasswordChange,
+    handleNameChange,
+    handleRegistration,
+  } = useRegistrationPage();
   return (
     <div className={"form"}>
       <h2 className={"form__title"}>Create account</h2>
@@ -17,7 +21,15 @@ const RegistrationPage = () => {
           className={"form__panel__text-input"}
           onChange={handleEmailChange}
         />
-
+        <label htmlFor={"usernameInput"} className={"form__panel__label"}>
+          Username
+        </label>
+        <input
+          id={"usernameInput"}
+          type={"text"}
+          className={"form__panel__text-input"}
+          onChange={handleNameChange}
+        />
         <label htmlFor={"passwordInput"} className={"form__panel__label"}>
           Password
         </label>

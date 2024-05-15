@@ -12,6 +12,11 @@ resource "aws_cognito_user_pool" "user_pool" {
     mutable             = true
     required            = true
   }
+  schema {
+    name                = "name"
+    attribute_data_type = "String"
+    mutable             = true
+  }
 
 
   password_policy {

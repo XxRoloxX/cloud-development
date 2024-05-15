@@ -23,25 +23,12 @@ export const getAllGames = async (): Promise<Game[]> => {
 };
 export const getGame = async (id: number): Promise<Game> => {
   const response = await ticTacToeAxios.get(`/game/${id}`);
+  console.log("Getting game");
   if (!response.data.moves) {
     response.data.moves = [];
   }
   return response.data;
 };
-
-// export const joinGame = async (
-//   gameId: number,
-//   playerTurn: string,
-//   playerName: string | null,
-// ) => {
-//   // const response = await ticTacToeAxios.patch(`/game/${gameId}/join`, {
-//   //   id: gameId,
-//   //   playerTurn,
-//   //   playerName,
-//   // });
-//   // socket.jo
-//   return response.data;
-// };
 
 export const connectToWebsocket = () => {
   const socket = io(API_URL);

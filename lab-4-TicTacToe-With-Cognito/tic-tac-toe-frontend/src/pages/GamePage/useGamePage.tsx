@@ -17,19 +17,33 @@ const useGamePage = () => {
   const { gameSocket } = useWebsockets();
 
   useEffect(() => {
-    console.log("Listening for move");
-    gameSocket.listenForMove(() => {
-      fetchGame();
+    gameSocket.listenForMove((move: MoveDto) => {
+      console.log("Move received");
+      if (!game) {
+        fetchGame();
+      } else {
+        updateGame(move);
+      }
     });
-  });
+  }, []);
 
   useEffect(() => {
     checkGameStatus();
     return () => gameSocket.unListenForJoinGame();
   }, [email, gameSocket]);
 
+  const updateGame = (move: MoveDto) => {
+    setGame((prevGame) => {
+      if (!prevGame) return null;
+      const newGame = { ...prevGame };
+      newGame.moves.push(move);
+      return newGame;
+    });
+  };
+
   const fetchGame = useCallback(async () => {
     if (typeof game_id !== "string") return null;
+    // console.log("FETCHING GAME", game_id);
     const game = game_id ? await getGame(game_id as unknown as number) : null;
     setGame(game);
     if (game?.status !== GameStatus.PENDING) {
