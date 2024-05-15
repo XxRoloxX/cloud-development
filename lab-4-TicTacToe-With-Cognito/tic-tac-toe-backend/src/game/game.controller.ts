@@ -7,7 +7,7 @@ import { EventsGateway } from './game.socket';
 import { UseGuards } from '@nestjs/common';
 import { HttpGuard } from 'src/auth/guards/http.guard';
 
-// @UseGuards(HttpGuard)
+@UseGuards(HttpGuard)
 @Controller('game')
 export class GameController {
   constructor(private readonly gameService: GameService, private readonly eventsGateway: EventsGateway) { }
