@@ -18,13 +18,20 @@ const useGamePage = () => {
 
   useEffect(() => {
     gameSocket.listenForMove((move: MoveDto) => {
-      console.log("Move received");
       if (!game) {
         fetchGame();
       } else {
         updateGame(move);
       }
+      // setGame((prevGame) => {
+      //   if (!prevGame) {
+      //     return fetchGame();
+      //   } else {
+      //     return updateGame(move)!;
+      //   }
+      // });
     });
+    return () => gameSocket.unListenForMove();
   }, []);
 
   useEffect(() => {
