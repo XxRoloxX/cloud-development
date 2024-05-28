@@ -1,6 +1,8 @@
 services:
   frontend:
     image: xxroloxx/ttt-frontend:latest
+    ports:
+      - "80:80"
     build:
       context: ./tic-tac-toe-frontend/
       args:

@@ -1,10 +1,4 @@
 #!/bin/bash
-# sudo yum install -y httpd 
-# echo "<html><h1>Hello World</h1></html>" > /var/www/html/index.html
-# sudo systemctl start httpd
-# sudo systemctl enable httpd
-# usermod -a -G apache ec2-user
-# chown -R ec2-user:apache /var/www
 echo "Installing Docker"
 sudo yum update -y
 sudo amazon-linux-extras install docker -y
@@ -13,7 +7,7 @@ sudo service docker start
 sudo usermod -a -G docker ec2-user
 
 echo "Installing Docker Compose"
-DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+DOCKER_CONFIG=/home/ec2-user/.docker
 mkdir -p $DOCKER_CONFIG/cli-plugins
 curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
 chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
