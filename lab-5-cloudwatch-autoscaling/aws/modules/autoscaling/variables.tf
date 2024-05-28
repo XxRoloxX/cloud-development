@@ -24,3 +24,28 @@ variable "load_balancer_name" {
   description = "The name of the load balancer"
   type        = string
 }
+
+variable "postgres_password" {
+  description = "The password for the PostgreSQL database"
+  type        = string
+}
+
+variable "postgres_user" {
+  description = "The username for the PostgreSQL database"
+  type        = string
+}
+
+variable "postgres_db" {
+  description = "The name of the PostgreSQL database"
+  type        = string
+}
+
+variable "postgres_host" {
+  description = "The hostname for the PostgreSQL database"
+  type        = string
+}
+
+variable "cognito_client_id" {
+  description = "The client ID for the Cognito user pool"
+  type        = string
+}

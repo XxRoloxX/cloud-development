@@ -87,5 +87,12 @@ resource "aws_launch_template" "ttt-launch_template" {
   }
 
   //Install and start apache 
-  user_data = filebase64("${path.module}/launch_script.sh")
+  user_data = base64encode(templatefile("${path.module}/launch_script.sh",
+    {
+      postgres_password = var.postgres_password
+      postgres_user     = var.postgres_user
+      postgres_db       = var.postgres_db
+      postgres_host     = var.postgres_host
+      cognito_client_id = var.cognito_client_id
+  }))
 }

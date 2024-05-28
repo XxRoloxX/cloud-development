@@ -33,13 +33,14 @@ module "load_balancer" {
   vpc_id            = module.network.vpc_id
 }
 
-resource "null_resource" "null" {
+resource "null_resource" "frontend_build" {
   triggers = {
     always_run = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "echo ${module.load_balancer.load_balancer_name} > load_balancer_name.txt"
+    command = "./build_frontend.sh ${module.load_balancer.load_balancer_name}"
   }
+  depends_on = [module.load_balancer]
 }
 
 module "cloudwatch" {
@@ -57,4 +58,10 @@ module "autoscaling" {
   vpc_id              = module.network.vpc_id
   ssh_key             = var.ssh_key
   load_balancer_name  = module.load_balancer.load_balancer_name
+  postgres_db         = var.postgres_db
+  postgres_user       = var.postgres_user
+  postgres_password   = var.postgres_password
+  postgres_host       = var.postgres_host
+  cognito_client_id   = module.codepipeline.cognito_client_id
+  depends_on          = [module.load_balancer, module.codepipeline, null_resource.frontend_build]
 }

@@ -22,7 +22,9 @@ const useConfirmAccountPage = () => {
     }
   };
 
-  const handleResendCode = async (e: React.MouseEvent<HTMLInputElement>) => {
+  const handleResendCode = async (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
     e.preventDefault();
     try {
       await resendCode({ email });
