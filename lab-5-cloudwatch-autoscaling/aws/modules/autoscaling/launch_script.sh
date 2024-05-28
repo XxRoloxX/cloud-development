@@ -5,3 +5,7 @@ sudo systemctl start httpd
 sudo systemctl enable httpd
 usermod -a -G apache ec2-user
 chown -R ec2-user:apache /var/www
+sudo yum update -y
+sudo amazon-linux-extras install docker
+sudo service docker start
+

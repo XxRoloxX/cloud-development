@@ -7,52 +7,11 @@ terraform {
   }
   required_version = ">= 1.2.0"
 }
-#
-#
-# resource "aws_lb_target_group" "frontend" {
-#   name     = "ttt-frontend-target-group"
-#   port     = 80
-#   protocol = "HTTP"
-#   vpc_id   = var.vpc_id
-#
-#   health_check {
-#     path                = "/"
-#     protocol            = "HTTP"
-#     port                = "traffic-port"
-#     interval            = 30
-#     timeout             = 5
-#     healthy_threshold   = 2
-#     unhealthy_threshold = 2
-#
-#   }
-# }
-#
-# resource "aws_lb_target_group" "backend" {
-#   name     = "ttt-backend-target-group"
-#   port     = 8080
-#   protocol = "HTTP"
-#   vpc_id   = var.vpc_id
-# }
-#
-# resource "aws_lb_target_group_attachment" "frontend" {
-#   target_group_arn = aws_lb_target_group.frontend.arn
-#   target_id        = aws_lb.lb.arn
-#   port             = 80
-# }
-#
-# resource "aws_lb_target_group_attachment" "backend" {
-#   target_group_arn = aws_lb_target_group.backend.arn
-#   target_id        = aws_lb.lb.arn
-#   port             = 8080
-# }
-#
 
 resource "aws_elb" "elb" {
-  name            = "ttt-elb"
   subnets         = [var.subnet_id]
   security_groups = [var.security_group_id]
-  # load_balancer_type = "application"
-
+  name_prefix     = "ttt"
 
   health_check {
     target              = "HTTP:80/"

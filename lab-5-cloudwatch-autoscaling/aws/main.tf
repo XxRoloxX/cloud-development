@@ -26,13 +26,6 @@ module "codepipeline" {
   source = "./modules/cognito/"
 }
 
-# module "ec2" {
-#   source            = "./modules/aws_ec2/"
-#   ssh_key           = var.ssh_key
-#   subnet_id         = module.network.subnet_id
-#   security_group_id = module.network.security_group_id
-# }
-
 module "load_balancer" {
   source            = "./modules/load_balancer/"
   subnet_id         = module.network.subnet_id
@@ -40,12 +33,20 @@ module "load_balancer" {
   vpc_id            = module.network.vpc_id
 }
 
+resource "null_resource" "null" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    command = "echo ${module.load_balancer.load_balancer_name} > load_balancer_name.txt"
+  }
+}
+
 module "cloudwatch" {
   source                 = "./modules/cloudwatch/"
   autoscaling_policy     = module.autoscaling.autoscaling_policy_arn
   autoscaling_group_name = module.autoscaling.autoscaling_group_name
-  # target_group_arn       = module.load_balancer.target_group_arn
-  loadbalancer_name = module.load_balancer.load_balancer_name
+  loadbalancer_name      = module.load_balancer.load_balancer_name
 }
 
 module "autoscaling" {

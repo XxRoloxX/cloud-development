@@ -21,7 +21,7 @@ export const setExpiresAtPersistently = (expiresAt: string | null) => {
   localStorage.setItem("expiresAt", expiresAt || "");
 };
 
-ticTacToeAxios.interceptors.request.use(async function(config) {
+ticTacToeAxios.interceptors.request.use(async function (config) {
   handleAuthentication(config);
   handleTokenRefresh(config);
   return config;
