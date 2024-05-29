@@ -17,6 +17,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST=${POSTGRES_HOST}
+      - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
     working_dir: /app
     ports:
       - "8080:8080"

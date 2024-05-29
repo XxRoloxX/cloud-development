@@ -5,11 +5,13 @@ import { Socket, io } from "socket.io-client";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const ticTacToeAxios = axios.create({
-  baseURL: API_URL,
+  baseURL: `${window.location.origin}:8080`, //`http://localhost:3000/api
   headers: {
     "Content-type": "application/json",
   },
 });
+
+console.log("API_URL", API_URL);
 
 export const createGame = async (): Promise<Game> => {
   const response = await ticTacToeAxios.post("/game");
