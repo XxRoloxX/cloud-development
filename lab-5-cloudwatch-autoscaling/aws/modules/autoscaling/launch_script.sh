@@ -7,10 +7,9 @@ sudo service docker start
 sudo usermod -a -G docker ec2-user
 
 echo "Installing Docker Compose"
-DOCKER_CONFIG=/home/ec2-user/.docker
-mkdir -p $DOCKER_CONFIG/cli-plugins
-curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
-chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+mkdir -p /usr/local/lib/docker/cli-plugins/
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
 echo "Fetching app config"
 git clone https://github.com/XxRoloxX/cloud-development.git

@@ -41,7 +41,7 @@ resource "aws_cloudwatch_metric_alarm" "healthy_hosts" {
   namespace           = "AWS/ELB"
   period              = "60"
   statistic           = "Average"
-  threshold           = "3"
+  threshold           = "2"
   alarm_description   = "This metric monitors the number of healthy hosts"
   alarm_actions       = [aws_sns_topic.alarm-topic.arn, var.autoscaling_policy]
   dimensions = {

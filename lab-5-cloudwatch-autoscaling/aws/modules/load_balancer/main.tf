@@ -13,6 +13,7 @@ resource "aws_elb" "elb" {
   security_groups = [var.security_group_id]
   name_prefix     = "ttt"
 
+
   health_check {
     target              = "HTTP:80/"
     interval            = 30

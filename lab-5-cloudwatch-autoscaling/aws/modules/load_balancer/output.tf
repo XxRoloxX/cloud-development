@@ -7,5 +7,6 @@ output "load_balancer_name" {
 }
 
 output "load_balancer_dns_name" {
-  value = aws_elb.elb.dns_name
+  # value = aws_elb.elb.dns_name
+  value = aws_elb.elb.name_prefix
 }
