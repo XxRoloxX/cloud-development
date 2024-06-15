@@ -42,3 +42,12 @@ resource "aws_elb" "elb" {
     lb_protocol       = "HTTP"
   }
 }
+
+// Sticky session
+
+resource "aws_lb_cookie_stickiness_policy" "lb_cookie_stickiness_policy" {
+  name                     = "ttt-cookie-stickiness-policy"
+  lb_port                  = 8080
+  load_balancer            = aws_elb.elb.name
+  cookie_expiration_period = 600
+}

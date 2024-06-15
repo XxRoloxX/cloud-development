@@ -22,19 +22,19 @@ resource "aws_autoscaling_policy" "cpu-policy" {
   autoscaling_group_name = aws_autoscaling_group.autoscaling_group.name
 }
 
-resource "aws_lb_target_group" "target_group_frontend" {
-  name     = "ttt-target-group-frontend"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
-}
-
-resource "aws_lb_target_group" "target_group_backend" {
-  name     = "ttt-target-group-backend"
-  port     = 8080
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
-}
+# resource "aws_lb_target_group" "target_group_frontend" {
+#   name     = "ttt-target-group-frontend"
+#   port     = 80
+#   protocol = "HTTP"
+#   vpc_id   = var.vpc_id
+# }
+#
+# resource "aws_lb_target_group" "target_group_backend" {
+#   name     = "ttt-target-group-backend"
+#   port     = 8080
+#   protocol = "HTTP"
+#   vpc_id   = var.vpc_id
+# }
 
 resource "aws_autoscaling_group" "autoscaling_group" {
   max_size            = 3

@@ -1,0 +1,116 @@
+@import "../../global/animations.scss";
+@import "../../global/variables.scss";
+
+.form {
+  margin: 0 auto;
+  width: 100vw;
+
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    background-color: $dark-grey-color;
+    width: 400px;
+    margin: auto;
+    border-radius: 20px;
+
+    &__label {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      text-align: left;
+      animation: fadeIn 1s ease;
+      width: 300px;
+      padding-top: 30px;
+    }
+
+    &__text-input {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      width: 300px;
+      border-style: none;
+      animation: fadeIn 1s ease;
+      padding: 10px;
+      border-radius: 10px;
+
+      &:focus {
+        outline: none;
+        color: $primary;
+      }
+    }
+
+    &__image-input {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      width: 300px;
+      border-style: none;
+      animation: fadeIn 1s ease;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: $dark-grey-color;
+      color: white;
+
+      &:focus {
+        outline: none;
+        color: $primary;
+      }
+    }
+
+    &__image {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      width: 400px;
+      animation: fadeIn 1s ease;
+      background-color: $dark-grey-color;
+      color: white;
+      border-color: $primary;
+      clip-path: circle();
+
+      &:focus {
+        outline: none;
+        color: $primary;
+      }
+    }
+
+    &__button {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      width: 300px;
+      border-style: none;
+      text-align: center;
+      animation: fadeIn 1s ease;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 20px;
+      background-color: $primary;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: darken($primary, 15%);
+      }
+    }
+  }
+
+  &__title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    margin-top: -1rem;
+    animation: fadeIn 1s ease;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__subtext {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: white;
+    animation: fadeIn 1s ease;
+  }
+}

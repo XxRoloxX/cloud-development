@@ -1,0 +1,113 @@
+@import "../../global/variables.scss";
+
+@keyframes spinning {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glow-up {
+  0% {
+    color: white;
+  }
+
+  50% {
+    color: $primary;
+  }
+
+  100% {
+    color: white;
+  }
+}
+
+@keyframes fading {
+  0% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.4;
+  }
+}
+
+.game-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  margin: auto;
+}
+
+.loading-page-text {
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 50px;
+  animation: fading 2s linear infinite;
+}
+
+.spinner {
+  animation: spinning 2s linear infinite;
+  border: 16px solid $cell-color;
+  border-top: 16px solid $primary;
+  border-radius: 50%;
+  margin: auto;
+  width: 120px;
+  height: 120px;
+}
+
+.game-status {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  animation: glow-up 2s infinite;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    font-size: 1.5rem;
+  }
+}
+
+.game-players-container {
+  margin-top: -50px;
+  display: flex;
+  width: 90vw;
+  padding: 20px;
+  justify-content: space-between;
+  margin: 50px;
+}
+
+.player-info {
+  font-size: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+
+  &__name {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+    }
+  }
+
+  &__symbol {
+    font-size: 3rem;
+    margin-bottom: 10px;
+
+    @media (max-width: 768px) {
+      font-size: 3rem;
+    }
+  }
+}
