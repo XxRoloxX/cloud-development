@@ -12,6 +12,7 @@ interface PlayerContext {
 
 export const PlayerProvider: React.FC = () => {
   const [playerInfo, setPlayerInfo] = useState<PlayerContext | null>(null);
+  const { userId } = useAuth();
 
   const fetchProfileInfo = async () => {
     const info = await getProfileInfo();
@@ -24,14 +25,14 @@ export const PlayerProvider: React.FC = () => {
 
   useEffect(() => {
     fetchProfileInfo();
-  }, []);
+  }, [userId]);
 
   return (
     <Outlet
       context={{
-        ...playerInfo,
         ...useWebsockets(),
         ...useAuth(),
+        ...playerInfo,
       }}
     />
   );

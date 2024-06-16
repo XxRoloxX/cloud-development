@@ -29,4 +29,8 @@ export class GameController {
     const res = this.gameService.findOne(params.id);
     return res;
   }
+  @Get('/results/:player1Id/:player2Id')
+  getResults(@Param() params: { player1Id: string, player2Id: string }): Promise<any> {
+    return this.gameService.getPreviousResults(params.player1Id, params.player2Id);
+  }
 }

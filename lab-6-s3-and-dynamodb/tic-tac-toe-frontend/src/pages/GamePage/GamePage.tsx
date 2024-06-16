@@ -4,7 +4,14 @@ import GameBoard from "../../components/GameBoard/GameBoard";
 import { GameStatus, PlayerTurn } from "../../api/types";
 
 const GamePage = () => {
-  const { game, isPending, handleMakingMove, playerTurn } = useGamePage();
+  const {
+    game,
+    isPending,
+    handleMakingMove,
+    playerTurn,
+    playerProfiles,
+    previouseResults,
+  } = useGamePage();
 
   const mapGameStatusToText = (status: GameStatus) => {
     switch (status) {
@@ -35,11 +42,28 @@ const GamePage = () => {
           <div className="game-players-container">
             <div className="player-info">
               <div className="player-info__symbol">{"X"}</div>
-              <div className="player-info__name">{game?.player1_id}</div>
+              <div className="player-info__name">
+                {playerProfiles?.player1.username}
+              </div>
+              <img
+                className="player-info__picture"
+                src={playerProfiles?.player1.profilePictureUrl}
+              />
+            </div>
+            <div className="player-previous-results">
+              <h1>{previouseResults?.player1Wins}</h1>
+              <h1>:</h1>
+              <h1>{previouseResults?.player2Wins}</h1>
             </div>
             <div className="player-info">
               <div className="player-info__symbol">{"O"}</div>
-              <div className="player-info__name">{game?.player2_id}</div>
+              <div className="player-info__name">
+                {playerProfiles?.player2.username}
+              </div>
+              <img
+                className="player-info__picture"
+                src={playerProfiles?.player2.profilePictureUrl}
+              />
             </div>
           </div>
           <div className="game-status">

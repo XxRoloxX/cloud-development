@@ -1,18 +1,15 @@
 services:
   frontend:
+    image: xxroloxx/ttt-frontend:latest
+    ports:
+      - "80:80"
     build:
       context: ./tic-tac-toe-frontend/
       args:
         - VITE_API_URL=${VITE_API_URL}
     container_name: tic-tac-toe_frontend_prod
-    environment:
-      VITE_API_URL: ${VITE_API_URL}
-      VIRTUAL_HOST: ${FRONTEND_HOST}
-      LETSENCRYPT_HOST: ${FRONTEND_HOST}
-    working_dir: /app
-    networks:
-      - backend
   backend:
+    image: xxroloxx/ttt-backend:latest
     container_name: tic-tac-toe_backend_prod
     build: ./tic-tac-toe-backend
     environment:
@@ -20,10 +17,16 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST=${POSTGRES_HOST}
-      - VIRTUAL_HOST=${BACKEND_HOST}
-      - LETSENCRYPT_HOST=${BACKEND_HOST}
-      - VIRTUAL_PORT=8080
+      - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - BUCKET_NAME=${BUCKET_NAME}
+      - DYNAMODB_TABLE_NAME=${DYNAMODB_TABLE_NAME}
     working_dir: /app
+    ports:
+      - "8080:8080"
     networks:
       - backend
   database:
@@ -33,46 +36,17 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+
     volumes:
       - postgres-data-dev:/var/lib/postgresql/data
     networks:
       - backend
-  proxy:
-    image: nginxproxy/nginx-proxy
-    container_name: tic-tac-toe_proxy_prod
-    ports:
-      - 80:80
-      - 443:443
+  watchtower:
+    image: containrrr/watchtower
+    container_name: tic-tac-toe_watchtower_prod
+    command: --interval 30
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - certs:/etc/nginx/certs
-      - vhost:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-    networks:
-      - backend
-
-  acme-companion:
-    image: nginxproxy/acme-companion
-    container_name: tic-tac-toe_acme_prod
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    volumes_from:
-      - proxy
-    networks:
-      - backend
-    environment:
-      DEFAULT_EMAIL: ${DEFAULT_EMAIL}
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: tic-tac-toe_admin_prod
-    restart: always
-    ports:
-      - "127.0.0.1:9999:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_LOGIN}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - backend
 networks:
@@ -80,7 +54,3 @@ networks:
     driver: bridge
 volumes:
   postgres-data-dev:
-  pgadmin-data:
-  certs:
-  vhost:
-  html:

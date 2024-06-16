@@ -7,6 +7,7 @@ import { MoveEntity } from 'src/entity/move.entity';
 import { EventsGateway } from './game.socket';
 import IAuthService from 'src/auth/interfaces/auth.interface';
 import { CognitoService } from 'src/auth/cognito/cognito.service';
+import { DynamodbModule } from 'src/database/dynamodb/dynamodb.module';
 
 @Module({
   controllers: [GameController],
@@ -16,6 +17,7 @@ import { CognitoService } from 'src/auth/cognito/cognito.service';
       useClass: CognitoService
     }
   ],
-  imports: [TypeOrmModule.forFeature([GameEntity, MoveEntity])],
+  imports: [TypeOrmModule.forFeature([GameEntity, MoveEntity]), DynamodbModule],
 })
+
 export class GameModule { }

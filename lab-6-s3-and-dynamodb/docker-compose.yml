@@ -29,11 +29,12 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - BUCKET_NAME=${BUCKET_NAME}
+      - DYNAMODB_TABLE_NAME=${DYNAMODB_TABLE_NAME}
     ports:
       - 127.0.0.1:8080:8080
     volumes:
       - "./tic-tac-toe-backend:/app"
-      - "${HOME}/.aws:/root/.aws"
+      # - "${HOME}/.aws:/root/.aws"
     working_dir: /app
     command: "npm run start:dev"
     networks:

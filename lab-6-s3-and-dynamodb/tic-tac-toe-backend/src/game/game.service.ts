@@ -7,12 +7,15 @@ import { getRandomName } from 'src/common/randomUtils';
 import { MoveDto } from './dto/move.dto';
 import { MoveEntity } from 'src/entity/move.entity';
 import { JoinGameDto } from './dto/join-game.dto';
+import { DynamodbService } from 'src/database/dynamodb/dynamodb.service';
+import { ResultResponseDto } from '../database/dynamodb/dto/result.dto';
 
 @Injectable()
 export class GameService {
   constructor(
     @InjectRepository(GameEntity)
     private gameRepository: Repository<GameEntity>,
+    private resultStore: DynamodbService
   ) { }
 
   findAll(): Promise<GameEntity[]> {
@@ -23,6 +26,13 @@ export class GameService {
     return this.gameRepository.find({ where: { status: GameStatus.PENDING }, relations: ["moves"] });
   }
   findOne(id: string): Promise<GameEntity> {
+    // this.resultStore.createResult({
+    //   gameId: `mock-game-${Date.now()}`,
+    //   player1Id: "player1",
+    //   player2Id: "player2",
+    //   result: GameStatus.DRAW
+    // })
+    // this.resultStore.getPreviousResults("player1", "player2")
     return this.gameRepository.findOne({ where: { id }, relations: ["moves"] });
   }
 
@@ -72,6 +82,25 @@ export class GameService {
     }
     return null;
   }
+
+  public async getPreviousResults(
+    player1Id: string,
+    player2Id: string
+  ): Promise<ResultResponseDto> {
+    const samePositionResults =
+      await this.resultStore.getPreviousResults(player1Id, player2Id);
+    const reversedPositionResults = (await this.resultStore.getPreviousResults(player2Id, player1Id)).map((result) => {
+      return {
+        ...result,
+        player1Id: player2Id,
+        player2Id: player1Id,
+        result: result.result === GameStatus.PLAYER1_WON ? GameStatus.PLAYER2_WON : result.result === GameStatus.PLAYER2_WON ? GameStatus.PLAYER1_WON : result.result
+      }
+    })
+
+    return this.resultStore.countResults([...samePositionResults, ...reversedPositionResults]);
+  }
+
   private isGameWonByPlayer(game: GameEntity) {
     return this.isDiagonalWonByPlayer(game)
       || this.isReverseDiagonalWonByPlayer(game)
@@ -91,8 +120,20 @@ export class GameService {
         const winner = this.isGameWonByPlayer(game);
         if (winner) {
           game.status = winner === PlayerTurn.Player1 ? GameStatus.PLAYER1_WON : GameStatus.PLAYER2_WON;
+          this.resultStore.createResult({
+            gameId: game.id,
+            player1Id: game.player1_id,
+            player2Id: game.player2_id,
+            result: game.status
+          })
         } else if (game.moves.length === 9) {
           game.status = GameStatus.DRAW;
+          this.resultStore.createResult({
+            gameId: game.id,
+            player1Id: game.player1_id,
+            player2Id: game.player2_id,
+            result: game.status
+          })
         }
         break;
       default:

@@ -1,13 +1,11 @@
-variable "bucket_name" {
-  type        = string
-  description = "The name of the bucket"
-}
-variable "table_name" {
-  type        = string
-  description = "The name of the table"
-}
 
 variable "ssh_key" {
+  type = string
+}
+variable "security_group_id" {
+  type = string
+}
+variable "subnet_id" {
   type = string
 }
 
@@ -31,6 +29,16 @@ variable "postgres_host" {
   type        = string
 }
 
+variable "cognito_client_id" {
+  description = "The client ID for the Cognito user pool"
+  type        = string
+}
+
+variable "cognito_user_pool_id" {
+  description = "The ID of the Cognito user pool"
+  type        = string
+}
+
 variable "aws_access_key" {
   description = "The access key for the AWS account"
   type        = string
@@ -43,5 +51,14 @@ variable "aws_secret_key" {
 
 variable "aws_session_token" {
   description = "The session token for the AWS account"
+  type        = string
+}
+
+variable "table_name" {
+  description = "The name of the DynamoDB table"
+  type        = string
+}
+variable "bucket_name" {
+  description = "The name of the S3 bucket"
   type        = string
 }

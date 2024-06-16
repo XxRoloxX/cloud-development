@@ -1,9 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Game, PlayerTurn, MoveDto, GameStatus } from "../../api/types";
-import { getGame } from "../../api/ticTacToeApi";
+import {
+  PreviousResults,
+  getGame,
+  getPreviousResults,
+  getUserProfile,
+} from "../../api/ticTacToeApi";
 import useAuth from "../../providers/useAuth";
 import useWebsockets from "../../providers/useWebsockets";
+import { UserProfile } from "../../api/ticTacToeApi";
+
+interface PlayerProfiles {
+  player1: UserProfile;
+  player2: UserProfile;
+}
 
 const useGamePage = () => {
   const { id: game_id, playerTurn } = useParams<{
@@ -12,9 +23,14 @@ const useGamePage = () => {
   }>();
 
   const [game, setGame] = useState<Game | null>(null);
+  const [playerProfiles, setPlayerProfiles] = useState<PlayerProfiles | null>(
+    null,
+  );
   const [isPending, setIsPending] = useState(true);
   const { userId } = useAuth();
   const { gameSocket } = useWebsockets();
+  const [previouseResults, setPreviousResults] =
+    useState<PreviousResults | null>(null);
 
   useEffect(() => {
     gameSocket.listenForMove((move: MoveDto) => {
@@ -32,6 +48,11 @@ const useGamePage = () => {
     return () => gameSocket.unListenForJoinGame();
   }, [userId, gameSocket]);
 
+  useEffect(() => {
+    handleSettingPlayerProfiles();
+    handleSettingPreviousResults();
+  }, [game?.status, game?.player1_id, game?.player2_id]);
+
   const updateGame = (move: MoveDto) => {
     setGame((prevGame) => {
       if (!prevGame) return null;
@@ -40,6 +61,19 @@ const useGamePage = () => {
       return newGame;
     });
   };
+
+  const handleSettingPreviousResults = useCallback(async () => {
+    if (!game || !game.player1_id || !game.player2_id) return;
+    const results = await getPreviousResults(game.player1_id, game.player2_id);
+    setPreviousResults(results);
+  }, [game]);
+
+  const handleSettingPlayerProfiles = useCallback(async () => {
+    if (!game || !game.player1_id || !game.player2_id) return;
+    const player1 = await getUserProfile(game.player1_id!);
+    const player2 = await getUserProfile(game.player2_id!);
+    setPlayerProfiles({ player1, player2 });
+  }, [game]);
 
   const fetchGame = useCallback(async () => {
     if (typeof game_id !== "string") return null;
@@ -90,7 +124,14 @@ const useGamePage = () => {
     gameSocket.makeMove(move);
   };
 
-  return { game, isPending, handleMakingMove, playerTurn };
+  return {
+    game,
+    isPending,
+    handleMakingMove,
+    playerTurn,
+    playerProfiles,
+    previouseResults,
+  };
 };
 
 export default useGamePage;

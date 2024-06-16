@@ -16,9 +16,7 @@ export const createGame = async (): Promise<Game> => {
   return response.data;
 };
 export const getAllGames = async (): Promise<Game[]> => {
-  // console.log("API_URL", API_URL);
   const response = await ticTacToeAxios.get("/game");
-  // console.log(response.data);
   return response.data;
 };
 export const getGame = async (id: number): Promise<Game> => {
@@ -59,4 +57,29 @@ export const uploadProfilePicture = async (
     },
   );
   return response.data;
+};
+
+export interface UserProfile {
+  userId: string;
+  username: string;
+  profilePictureUrl: string;
+}
+export interface PreviousResults {
+  player1Wins: number;
+  player2Wins: number;
+}
+
+export const getUserProfile = async (userId: string) => {
+  const response = await ticTacToeAxios.get(`/users/${userId}`);
+  return response.data as UserProfile;
+};
+
+export const getPreviousResults = async (
+  player1Id: string,
+  player2Id: string,
+) => {
+  const response = await ticTacToeAxios.get(
+    `/game/results/${player1Id}/${player2Id}`,
+  );
+  return response.data as PreviousResults;
 };
