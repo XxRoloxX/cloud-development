@@ -24,8 +24,8 @@ const useLoginPage = () => {
     setEmail(e.target.value);
   };
 
-  const handleLogin = async (e: React.MouseEvent<HTMLInputElement>) => {
-    e.preventDefault();
+  const handleLogin = async () => {
+    // e.preventDefault();
     try {
       const result = await login({ email, password });
       console.log(result);

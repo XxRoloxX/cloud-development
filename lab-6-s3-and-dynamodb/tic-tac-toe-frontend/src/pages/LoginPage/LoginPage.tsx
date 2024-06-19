@@ -30,12 +30,13 @@ const LoginPage = () => {
           className={"form__panel__text-input"}
           onChange={handlePasswordChange}
         />
-        <input
+        <button
           type={"button"}
-          value={"Login"}
           className={"form__panel__button"}
           onClick={handleLogin}
-        />
+        >
+          Login
+        </button>
 
         <Link className={"form__subtext"} to="/register">
           Sign up
