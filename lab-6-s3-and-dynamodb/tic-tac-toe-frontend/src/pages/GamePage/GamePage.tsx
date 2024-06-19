@@ -48,6 +48,8 @@ const GamePage = () => {
               <img
                 className="player-info__picture"
                 src={playerProfiles?.player1.profilePictureUrl}
+                width="200"
+                height="200"
               />
             </div>
             <div className="player-previous-results">
@@ -63,6 +65,8 @@ const GamePage = () => {
               <img
                 className="player-info__picture"
                 src={playerProfiles?.player2.profilePictureUrl}
+                width="200"
+                height="200"
               />
             </div>
           </div>

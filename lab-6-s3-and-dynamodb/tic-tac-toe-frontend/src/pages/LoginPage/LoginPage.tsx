@@ -31,7 +31,7 @@ const LoginPage = () => {
           onChange={handlePasswordChange}
         />
         <input
-          type={"submit"}
+          type={"button"}
           value={"Login"}
           className={"form__panel__button"}
           onClick={handleLogin}

@@ -1,14 +1,27 @@
 import "../../components/Forms/Forms.style.scss";
-import imagePlaceholder from "../../assets/img-placeholder-transparent.jpg";
-import { useState } from "react";
-import { uploadProfilePicture } from "../../api/ticTacToeApi";
+import { useEffect, useState } from "react";
+import {
+  UserProfile,
+  getUserProfile,
+  uploadProfilePicture,
+} from "../../api/ticTacToeApi";
 import { usePlayer } from "../../hooks/playerNameContext";
 import { useNavigate } from "react-router-dom";
 
 const UploadProfilePicturePage = () => {
   const [image, setImage] = useState<File | null>(null);
   const { playerId } = usePlayer();
+  const [playerProfile, setPlayerProfile] = useState<UserProfile | null>(null);
   const navigate = useNavigate();
+
+  const fetchProfilePicture = async () => {
+    const profile = await getUserProfile(playerId);
+    setPlayerProfile(profile);
+  };
+
+  useEffect(() => {
+    fetchProfilePicture();
+  });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -32,7 +45,11 @@ const UploadProfilePicturePage = () => {
       <form className={"form__panel"}>
         <label htmlFor={"codeInput"} className={"form__panel__label"}></label>
         <img
-          src={image ? URL.createObjectURL(image) : imagePlaceholder}
+          src={
+            image
+              ? URL.createObjectURL(image)
+              : playerProfile?.profilePictureUrl
+          }
           alt={"Profile picture preview"}
           className={"form__panel__image"}
         />
